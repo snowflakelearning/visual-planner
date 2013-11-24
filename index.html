@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title>Snowflake Visual Planner</title>
+    <script type="text/javascript" src="Environment.js"></script>
+    <script type="text/javascript" src="mixpanel.js"></script>
+    <script type="text/javascript" src="Css.js"></script>
+    <script type="text/javascript" src="BrowserTest.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.0/backbone-min.js"></script>
+    <script type="text/javascript" src="ALXUI.js"></script>
+    <script type="text/javascript" src="https://sdk.amazonaws.com/js/aws-sdk-2.0.0-rc1.min.js"></script>
+    <script type="text/javascript" src="Popup.js"></script>
+    <script type="text/javascript" src="LoginPopup.js"></script>
+    <script type="text/javascript" src="LabeledInput.js"></script>
+    <script type="text/javascript" src="AccountManager.js"></script>
+    <script type="text/javascript" src="DataList.js"></script>
+    <script type="text/javascript" src="DataRow.js"></script>
+    <script type="text/javascript" src="ActivityRow.js"></script>
+    <script type="text/javascript" src="ActivityList.js"></script>
+    <script type="text/javascript" src="Empty.js"></script>
+    <script type="text/javascript" src="DetailView.js"></script>
+    <script type="text/javascript" src="ImageGallery.js"></script>
+    <script type="text/javascript" src="GalleryThumb.js"></script>
+    <script type="text/javascript" src="ImageEditPopup.js"></script>
+    <script type="text/javascript" src="Header.js"></script>
+    <script type="text/javascript" src="WhoThumb.js"></script>
+    <script type="text/javascript" src="WhoPopup.js"></script>
+    <script type="text/javascript" src="VisualPlanner.js"></script>
+    <script type="text/javascript" src="IntroManager.js"></script>
+    <script type="text/javascript" src="Uservoice.js"></script>
+    <script type="text/javascript" src="CanvasShader.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Oxygen' rel='stylesheet' type='text/css'>
+  </head>
+  <body>
+    <div id="fb-root"></div>
+    <script type="text/javascript">
+
+      var bodyStyle = {
+        margin: 0,
+        padding: 0,
+        minWidth: 700,
+      };
+
+      var dispatcher = _.extend({}, Backbone.Events);
+
+      ALXUI.styleEl(document.body, bodyStyle);
+
+      mixpanel.track('pageLoad');
+
+      window.fbAsyncInit = function(){
+        var accountManager = new App.AccountManager(launch, dispatcher);
+      };
+
+      function launch(am){
+        var vp = new App.VisualPlanner(document.body, am, dispatcher);
+        vp.load();
+      }
+
+      // Load the Facebook SDK asynchronously
+      (function(d, s, id){
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) {return;}
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/en_US/all.js";
+        fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));
+    </script>
+    <div id="fblogin" class="fb-login-button" data-width="200" data-autologoutlink="true" data-size="xlarge" scope="email"></div>
+  </body>
+</html>

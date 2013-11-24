@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:dc="http://purl.org/dc/elements/1.1/" id="svg2" viewBox="0 0 32 32">
+ <defs id="defs4">
+  <linearGradient id="linearGradient10137" y2="28.275" gradientUnits="userSpaceOnUse" y1="3.9757" x2="20.07" x1="12.113">
+   <stop id="stop1369" stop-color="#0d5f8c" offset="0"/>
+   <stop id="stop1371" stop-color="#0d5f8c" offset="1"/>
+  </linearGradient>
+  <linearGradient id="linearGradient1379" y2="30" gradientUnits="userSpaceOnUse" y1="2" x2="20.214" x1="12.031">
+   <stop id="stop8665" stop-color="#20286d" offset="0"/>
+   <stop id="stop8667" stop-color="#0b102f" offset="1"/>
+  </linearGradient>
+ </defs>
+ <g id="layer1">
+  <g id="g2454">
+   <path id="rect1370" fill="url(#linearGradient1379)" d="m2.875 13c-1.5943 0-2.875 1.338-2.875 3 1.0176e-16 1.662 1.2807 3 2.875 3h26.25c1.594 0 2.875-1.338 2.875-3s-1.281-3-2.875-3h-26.25z"/>
+   <path id="path3563" transform="translate(-.0625 .0625)" fill="url(#linearGradient10137)" d="m2.875 13.938c-1.0671 0-1.9375 0.884-1.9375 2.062s0.8704 2.062 1.9375 2.062h26.25c1.067 0 1.937-0.884 1.937-2.062s-0.87-2.062-1.937-2.062h-26.25z"/>
+  </g>
+ </g>
+ <metadata>
+  <rdf:RDF>
+   <cc:Work>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <cc:license rdf:resource="http://creativecommons.org/licenses/publicdomain/"/>
+    <dc:publisher>
+     <cc:Agent rdf:about="http://openclipart.org/">
+      <dc:title>Openclipart</dc:title>
+     </cc:Agent>
+    </dc:publisher>
+   </cc:Work>
+   <cc:License rdf:about="http://creativecommons.org/licenses/publicdomain/">
+    <cc:permits rdf:resource="http://creativecommons.org/ns#Reproduction"/>
+    <cc:permits rdf:resource="http://creativecommons.org/ns#Distribution"/>
+    <cc:permits rdf:resource="http://creativecommons.org/ns#DerivativeWorks"/>
+   </cc:License>
+  </rdf:RDF>
+ </metadata>
+</svg>

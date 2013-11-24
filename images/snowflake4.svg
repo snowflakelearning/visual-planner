@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 14.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 43363)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="118.294px" height="119.05px" viewBox="0 0 118.294 119.05" enable-background="new 0 0 118.294 119.05"
+	 xml:space="preserve">
+<symbol  id="Snowflake4" viewBox="-59.146 -59.526 118.294 119.051">
+	
+		<line fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" x1="1.251" y1="31.306" x2="-2.216" y2="-33.299"/>
+	
+		<line fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" x1="30.422" y1="-4.582" x2="-31.646" y2="4.157"/>
+	
+		<line fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" x1="22.439" y1="21.022" x2="-23.668" y2="-21.445"/>
+	
+		<line fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" x1="18.855" y1="-24.775" x2="-20.084" y2="24.353"/>
+	
+		<line fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" x1="39.168" y1="12.443" x2="-40.137" y2="-14.432"/>
+	
+		<line fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" x1="12.953" y1="-40.646" x2="-13.916" y2="38.657"/>
+	<path fill="#FFFFFF" d="M18.598-59.037l0.947,0.32c4.976,1.666,7.727,7.205,6.06,12.174c-1.666,4.965-7.209,7.723-12.177,6.055
+		l-0.949-0.32c-4.972-1.666-7.726-7.203-6.057-12.172C8.085-57.953,13.629-60.707,18.598-59.037"/>
+	<path fill="#FFFFFF" d="M-12.992,38.969c11.762,3.942,5.645,22.176-6.116,18.232C-30.867,53.258-24.745,35.022-12.992,38.969"/>
+	<path fill="#FFFFFF" d="M52.813,7.572c11.762,3.945,5.645,22.181-6.116,18.23C34.944,21.857,41.06,3.629,52.813,7.572"/>
+	
+		<line fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" x1="28.99" y1="58.524" x2="-29.924" y2="-56.834"/>
+	
+		<line fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" x1="-58.146" y1="30.303" x2="57.212" y2="-28.617"/>
+	<path fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" d="M-14.107-51.346
+		c7.735,13.699-13.507,25.699-21.246,11.998"/>
+	<path fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" d="M-51.503,14.26
+		C-37.639,6.822-26.096,28.32-39.96,35.761"/>
+	<path fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" d="M47.869-10.332
+		C34.285-2.388,21.971-23.447,35.548-31.393"/>
+	<path fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" d="M12.23,49.827
+		C4.811,35.945,26.326,24.44,33.751,38.318"/>
+	<path fill="#FFFFFF" d="M-45.695-25.549c11.758,3.941,5.642,22.172-6.116,18.229C-63.573-11.264-57.457-29.496-45.695-25.549"/>
+</symbol>
+<use xlink:href="#Snowflake4"  width="118.294" height="119.051" x="-59.146" y="-59.526" transform="matrix(1 0 0 -1 59.1465 59.5249)" overflow="visible"/>
+</svg>

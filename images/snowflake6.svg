@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 14.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 43363)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="106.954px" height="120.661px" viewBox="0 0 106.954 120.661" enable-background="new 0 0 106.954 120.661"
+	 xml:space="preserve">
+<symbol  id="Snowflake6" viewBox="-53.476 -60.33 106.954 120.661">
+	
+		<line fill="none" stroke="#FFFFFF" stroke-width="1.778" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" x1="-42.615" y1="23.896" x2="42.604" y2="-25.47"/>
+	<polyline fill="none" stroke="#FFFFFF" stroke-width="1.778" stroke-linecap="round" stroke-miterlimit="10" points="
+		31.827,-6.286 16.946,-10.807 20.559,-25.748 	"/>
+	<polyline fill="none" stroke="#FFFFFF" stroke-width="1.778" stroke-linecap="round" stroke-miterlimit="10" points="
+		-19.478,22.162 -16.25,8.211 -29.848,4.254 	"/>
+	
+		<line fill="none" stroke="#FFFFFF" stroke-width="1.778" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" x1="0.375" y1="48.99" x2="2.658" y2="-49.469"/>
+	<polyline fill="none" stroke="#FFFFFF" stroke-width="1.778" stroke-linecap="round" stroke-miterlimit="10" points="
+		13.629,-31.896 2.022,-21.548 -8.851,-32.419 	"/>
+	<polyline fill="none" stroke="#FFFFFF" stroke-width="1.778" stroke-linecap="round" stroke-miterlimit="10" points="11.93,28.635 
+		1.702,18.608 -8.757,28.156 	"/>
+	
+		<line fill="none" stroke="#FFFFFF" stroke-width="1.778" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" x1="-41.539" y1="-29.581" x2="40.867" y2="24.339"/>
+	<polyline fill="none" stroke="#FFFFFF" stroke-width="1.778" stroke-linecap="round" stroke-miterlimit="10" points="
+		18.473,22.771 15.805,7.45 30.785,3.956 	"/>
+	<polyline fill="none" stroke="#FFFFFF" stroke-width="1.778" stroke-linecap="round" stroke-miterlimit="10" points="
+		-30.441,-10.261 -16.538,-13.656 -19.112,-27.577 	"/>
+	<path fill="#FFFFFF" d="M-31.783,24.726c0.458-5.979-4.021-11.202-10.005-11.659c-5.982-0.458-11.199,4.022-11.656,10.003
+		c-0.457,5.982,4.016,11.201,10.001,11.659C-37.463,35.186-32.24,30.706-31.783,24.726"/>
+	<path fill="#FFFFFF" d="M11.17,50.295c0.458-5.98-4.021-11.201-10.003-11.658c-5.98-0.459-11.2,4.02-11.655,10.002
+		c-0.458,5.982,4.017,11.201,10,11.66C5.492,60.755,10.713,56.276,11.17,50.295"/>
+	<path fill="#FFFFFF" d="M51.688,25.302c0.455-5.984-4.021-11.203-10.004-11.66c-5.979-0.457-11.201,4.019-11.659,10.004
+		c-0.457,5.98,4.021,11.202,10.005,11.659C46.012,35.762,51.229,31.281,51.688,25.302"/>
+	<path fill="#FFFFFF" d="M53.445-24.827c0.457-5.983-4.021-11.201-10.001-11.658c-5.981-0.459-11.204,4.017-11.66,10.001
+		c-0.457,5.981,4.021,11.202,10.004,11.661C47.767-14.369,52.988-18.849,53.445-24.827"/>
+	<path fill="#FFFFFF" d="M13.49-48.64c0.458-5.98-4.021-11.201-10.004-11.658c-5.982-0.458-11.203,4.021-11.662,10.004
+		c-0.457,5.979,4.021,11.2,10.006,11.658C7.811-38.18,13.033-42.657,13.49-48.64"/>
+	<path fill="#FFFFFF" d="M-30.732-28.466c0.459-5.982-4.021-11.202-10-11.658c-5.983-0.457-11.204,4.021-11.661,10.001
+		c-0.458,5.983,4.021,11.204,10.005,11.663C-36.41-18.006-31.189-22.485-30.732-28.466"/>
+</symbol>
+<use xlink:href="#Snowflake6"  width="106.954" height="120.661" x="-53.476" y="-60.33" transform="matrix(1 0 0 -1 53.4766 60.3306)" overflow="visible"/>
+</svg>
