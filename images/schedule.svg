@@ -1,39 +1,28 @@
-<?xml version="1.0"?>
-<svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" id="svg4079" viewBox="0 0 499.9 513.15" version="1.1">
- <g id="layer1" transform="translate(-273.66 -336.9)">
-  <g id="g4044" transform="matrix(.96593 -.25882 .25882 .96593 -29.139 137.91)">
-   <rect id="rect3240" opacity=".8" height="400" width="400" stroke="rgb(194, 95, 255)" y="389.51" x="214.29" stroke-width="10" fill="none"/>
-   <rect id="rect4014" opacity=".8" height="108.44" width="405.58" y="386.71" x="211.49" fill="rgb(85, 141, 255)"/>
-   <g id="g4036" fill="rgb(194, 95, 255)" transform="translate(3.8826)">
-    <g id="g4022">
-     <rect id="rect4018" height="52.857" width="11.746" y="356.65" x="262.52"/>
-     <rect id="rect4020" height="52.857" width="11.746" y="356.65" x="282.25"/>
-    </g>
-    <g id="g4026" transform="translate(264.29)">
-     <rect id="rect4028" height="52.857" width="11.746" y="356.65" x="262.52"/>
-     <rect id="rect4030" height="52.857" width="11.746" y="356.65" x="282.25"/>
-    </g>
-   </g>
-   <path id="rect4032" d="m528.42 703.26v88.105h2.3303l85.774-85.809v-2.296h-88.105z" stroke="rgb(194, 95, 255)" stroke-width="4" fill="rgb(93, 242, 255)"/>
-  </g>
- </g>
- <metadata>
-  <rdf:RDF>
-   <cc:Work>
-    <dc:format>image/svg+xml</dc:format>
-    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
-    <cc:license rdf:resource="http://creativecommons.org/licenses/publicdomain/"/>
-    <dc:publisher>
-     <cc:Agent rdf:about="http://openclipart.org/">
-      <dc:title>Openclipart</dc:title>
-     </cc:Agent>
-    </dc:publisher>
-   </cc:Work>
-   <cc:License rdf:about="http://creativecommons.org/licenses/publicdomain/">
-    <cc:permits rdf:resource="http://creativecommons.org/ns#Reproduction"/>
-    <cc:permits rdf:resource="http://creativecommons.org/ns#Distribution"/>
-    <cc:permits rdf:resource="http://creativecommons.org/ns#DerivativeWorks"/>
-   </cc:License>
-  </rdf:RDF>
- </metadata>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 14.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 43363)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1"
+	 id="svg4079" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="200px" height="200px"
+	 viewBox="0 0 200 200" enable-background="new 0 0 200 200" xml:space="preserve">
+<g id="layer1" transform="translate(-273.66 -336.9)">
+	<g id="g4044" transform="matrix(.96593 -.25882 .25882 .96593 -29.139 137.91)">
+		
+			<rect id="rect3240" x="233.071" y="317.6" opacity="0.8" fill="#FFFFFF" stroke="#C25FFF" stroke-width="10" enable-background="new    " width="155.899" height="155.9"/>
+		
+			<rect id="rect4014" x="231.979" y="316.509" opacity="0.8" fill="#558DFF" enable-background="new    " width="158.075" height="42.265"/>
+		<g id="g4036" transform="translate(3.8826)">
+			<g id="g4022">
+				<rect id="rect4018" x="249.498" y="304.793" fill="#C25FFF" width="4.578" height="20.601"/>
+				<rect id="rect4020" x="257.189" y="304.793" fill="#C25FFF" width="4.578" height="20.601"/>
+			</g>
+			<g id="g4026" transform="translate(264.29)">
+				<rect id="rect4028" x="88.216" y="304.793" fill="#C25FFF" width="4.578" height="20.601"/>
+				<rect id="rect4030" x="95.906" y="304.793" fill="#C25FFF" width="4.578" height="20.601"/>
+			</g>
+		</g>
+		<path id="rect4032" fill="#5DF2FF" stroke="#C25FFF" stroke-width="4" d="M355.502,439.884l0,34.338l0.908,0.001l33.431-33.444
+			l0-0.895L355.502,439.884L355.502,439.884z"/>
+	</g>
+</g>
 </svg>
