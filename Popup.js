@@ -74,7 +74,7 @@ window.App = window.App || {};
   };
 
   var shaderStyle = {
-    position: 'fixed',
+    position: 'absolute',
     left: 0,
     right: 0,
     top: 0,
@@ -113,18 +113,19 @@ window.App = window.App || {};
   };
 
   var okayStyle = {
-    backgroundColor: '#999',
-    width: 150,
-    height: 30,
-    color: 'white',
-    textAlign: 'center',
-    lineHeight: 30,
-    fontSize: 20,
-    cursor: 'pointer',
     position: 'absolute',
+    width: 120,
     bottom: 15,
     left: '50%',
-    marginLeft: -75,
+    height: 35,
+    marginLeft: -60,
+    backgroundColor: App.DARK_BLUE,
+    textAlign: 'center',
+    fontSize: 22,
+    color: 'white',
+    lineHeight: 35,
+    cursor: 'pointer',
+    borderRadius: 3,
   };
 
   App.Popup = Popup;

@@ -9,8 +9,8 @@ var App = App || {};
   var blankActivity = {
     "id": 0,
     "parentId": null,
-    "name": "",
-    "when": "",
+    "name": "Something fun!",
+    "when": "Someday",
     "who": [],
     "where": App.BLANK_IMAGE_TAG,
     "icon": App.BLANK_IMAGE_TAG
@@ -35,15 +35,17 @@ var App = App || {};
     this.imageSelectPopup.toPopupMode();
     this.dispatcher.bind('showActivityDetail', _showDetailView, this);
     this.dispatcher.bind('exitDetailView', _hideDetailView, this);
-    this.dispatcher.bind('editMode', _hideDetailView, this);
+    this.dispatcher.bind('editMode', _toEditMode, this);
     this.dispatcher.bind('addActivity', _addActivity, this);
     this.dispatcher.bind('deleteActivity', _deleteActivity, this);
+    this.dispatcher.bind('shiftStep', _shiftStep, this);
     this.activityData = {};
     App.css.fixWidth(this.content, App.BOX_WIDTH);
     this.firstRun = true;
     this.dispatcher.trigger('editMode', true);
     ALXUI.hide(this.list.div);
     this.dispatcher.bind('showIntro', _showIntro, this);
+    App.IntroManager.initialize(this.dispatcher);
   };
 
   p.load = function(){
@@ -54,8 +56,8 @@ var App = App || {};
     this.activityData = activityJson;
     if(this.firstRun && activityJson.length === 0){
       this.dispatcher.trigger('addActivity', null);
-      if(this.am.newUser || true){  ///TODO DEBUG
-        this.dispatcher.trigger('showIntro', 'Edit');
+      if(this.am.newUser){
+        this.dispatcher.trigger('showIntro', 'NewUser');
       }
     } else {
       this.list.update(this.activityData);
@@ -65,6 +67,7 @@ var App = App || {};
         this.firstRun = false;
       }
     }
+    this.dispatcher.trigger('load');
   };
 
   p.saveData = function(data){
@@ -83,14 +86,56 @@ var App = App || {};
   };
 
   function _showIntro(introName){
-    //App.IntroManager.playIntro(introName, this);
-    //var cs = new App.CanvasShader();
-    //cs.shadeEl(this.header.title);
+    if(introName){
+      App.IntroManager.playIntro(introName, this);
+    } else {
+      if(this.editMode){
+        App.IntroManager.playIntro('Edit', this);
+      } else {
+        if(this.detailMode){
+          App.IntroManager.playIntro('Detail', this);
+        } else {
+          App.IntroManager.playIntro('ActivityList', this);
+        }
+      }
+    }
   }
 
   function _noData(){
     this.openData([]);
-  };
+  }
+
+  function _shiftStep(up, id, parentId){
+    var activityData = this.list.getActivityData();
+    var clickedRow = _.find(activityData, function(r){
+      return r.id === id && r.parentId === parentId;
+    });
+    var clickedRowIndex = activityData.indexOf(clickedRow);
+    var toSwitchIndex;
+    if(up){
+      toSwitchIndex = -1;
+      _.each(activityData, function(r){
+        var rIndex = activityData.indexOf(r);
+        if(r.parentId === parentId &&  rIndex < clickedRowIndex && rIndex > toSwitchIndex){
+          toSwitchIndex = rIndex;
+        }
+      });
+    } else {
+      toSwitchIndex = activityData.length;
+      _.each(activityData, function(r){
+        var rIndex = activityData.indexOf(r);
+        if(r.parentId === parentId && rIndex > clickedRowIndex && rIndex < toSwitchIndex){
+          toSwitchIndex = rIndex;
+        }
+      });
+    }
+    if(toSwitchIndex > -1 && toSwitchIndex < activityData.length){
+      var toSwitch = activityData[toSwitchIndex];
+      activityData[toSwitchIndex] = clickedRow;
+      activityData[clickedRowIndex] = toSwitch;
+    }
+    this.saveData(activityData);
+  }
 
   function err(err){
     console.log(err);
@@ -131,11 +176,13 @@ var App = App || {};
     newActivity.parentId = parentId;
     if(parentId !== null){
       delete newActivity.icon;
+      newActivity.name = 'An important step';
     }
     return newActivity;
   }
 
   function _showDetailView(data){
+    this.detailMode = true;
     var activityData = this.list.getActivityData();
     var rowData = _.filter(activityData, function(r){
       return r.parentId === data.id;
@@ -145,8 +192,14 @@ var App = App || {};
   }
 
   function _hideDetailView(){
+    this.detailMode = false;
     this.detailView.hide();
     ALXUI.show(this.list.div);
+  }
+
+  function _toEditMode(on){
+    this.editMode = on;
+    _hideDetailView.apply(this);
   }
 
   function _showImagePopup(row, attribute, e){
@@ -170,15 +223,6 @@ var App = App || {};
       }
       this.saveData(activityData);
     }.bind(this), 1000);
-  }
-
-  function _setupIntro(){
-    return;
-    App.IntroManager.initialize();
-    App.IntroManager.addIntroStep('test', this.header.preview, 'Click here to enter edit mode', 'left');
-    App.IntroManager.addIntroStep('test', document.querySelector('.uv-icon'),
-          'If you have any feedback click here to let us know', 'top');
-    App.IntroManager.playIntro('test');
   }
 
   var containerStyle = {

@@ -4,6 +4,8 @@
 window.App = window.App || {};
 (function(){
 
+  App.VERSION = '0.0.0';
+
   //Use the prod app id on staging and production
   var useProdAppId = window.location.hostname.indexOf('snowflakelearning.com') !== -1;
   //only use prod mixpanel on production site

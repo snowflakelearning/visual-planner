@@ -5,6 +5,8 @@ window.App = window.App || {};
 (function(App){
 
   var BACK_IMAGE = 'images/back-arrow.svg';
+  var im = ALXUI.createEl('img');
+  im.src = BACK_IMAGE;
 
   var DetailView = function(parentNode, dispatcher) {
     this.initialize(parentNode, dispatcher);
@@ -65,6 +67,11 @@ window.App = window.App || {};
         count++;
       }
     });
+    if(count === 0){
+      this.list.empty.show(true);
+    } else {
+      this.list.empty.hide();
+    }
   }
 
   function _updateBoxes(){

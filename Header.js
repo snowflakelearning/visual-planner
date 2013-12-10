@@ -2,6 +2,7 @@ window.App = window.App || {};
 (function(App){
 
   var INTRO_IMAGE = 'images/info_i.svg';
+  var ONLINE = 'images/online.svg';
 
   var Header = function(parentNode, dispatcher) {
     this.initialize(parentNode, dispatcher);
@@ -13,24 +14,53 @@ window.App = window.App || {};
     this.div = ALXUI.addEl(parentNode, 'div', headerStyle);
     this.title = ALXUI.addEl(this.div, 'div', titleStyle);
     this.title.textContent = 'Snowflake Planner';
-    this.introButton = ALXUI.addEl(this.div, 'div', introStyle);
+    this.buttonContainer = ALXUI.addEl(this.div, 'div', containerStyle);
+    this.divider = ALXUI.addEl(this.buttonContainer, 'div', dividerStyle);
+    this.introButton = ALXUI.addEl(this.buttonContainer, 'div', introStyle);
+    this.divider2 = ALXUI.addEl(this.buttonContainer, 'div', dividerStyle);
+    this.onlineIcon = ALXUI.addEl(this.buttonContainer, 'div', [introStyle, {opacity: 1, cursor: 'default'}]);
+    ALXUI.setBackgroundImage(this.onlineIcon, ONLINE);
     ALXUI.setBackgroundImage(this.introButton, INTRO_IMAGE);
     App.css.addTouchClickEvent(this.introButton, _onIntroClick.bind(this));
-    this.introButton.addEventListener('mouseover', function(){
-      ALXUI.styleEl(this.introButton, introHighlightStyle);
-    }.bind(this));
-    this.introButton.addEventListener('mouseout', function(){
-      ALXUI.styleEl(this.introButton, introStyle);
-    }.bind(this));
-    App.addUserVoice();
-    _checkForUVLoad.apply(this);
+    App.css.addMouseOver(this.introButton, introHighlightStyle, introStyle);
+    this.dispatcher.bind('online', _onOnline.bind(this));
+    this.dispatcher.bind('offline', _onOffline.bind(this));
+    if(window.navigator.onLine){
+      App.addUserVoice();
+      _checkForUVLoad.apply(this);
+      _onOnline.apply(this);
+    } else {
+      _onOffline.apply(this);
+    }
   };
+
+  function _onOnline(){
+    ALXUI.styleEl(this.onlineIcon, {opacity: 1});
+    this.onlineIcon.title = 'You are connected to the internet and you changes are being saved to the cloud.';
+    ALXUI.show(this.divider);
+    if(this.uservoiceButton){
+      ALXUI.show(this.uservoiceButton);
+    } else {
+      App.addUserVoice();
+      _checkForUVLoad.apply(this);
+    }
+  }
+
+  function _onOffline(){
+    ALXUI.styleEl(this.onlineIcon, {opacity: 0.5});
+    this.onlineIcon.title = 'You are currently offline and edit mode is disabled.';
+    ALXUI.hide(this.divider);
+    if(this.uservoiceButton){
+      ALXUI.hide(this.uservoiceButton);
+    }
+    this.dispatcher.trigger('editMode', false);
+  }
 
   function _checkForUVLoad(){
     clearTimeout(this.UVLoadTO);
     this.uservoiceButton = document.querySelector('.uv-icon');
     if(this.uservoiceButton){
-      this.div.insertBefore(this.uservoiceButton, this.introButton);
+      this.buttonContainer.insertBefore(this.uservoiceButton, this.divider);
       ALXUI.styleEl(this.uservoiceButton, uservoiceStyle);
       this.uservoiceButton.title = 'Ask for help or send feedback';
     } else {
@@ -39,7 +69,7 @@ window.App = window.App || {};
   }
 
   function _onIntroClick(e){
-    console.log('intro');
+    this.dispatcher.trigger('showIntro');
   }
 
   var titleStyle = {
@@ -61,8 +91,17 @@ window.App = window.App || {};
   var uservoiceStyle = {
     cssFloat: 'right',
     margin: 25,
+    marginRight: 0,
+    height: 50,
+    width: 40,
     position: 'relative',
   };
+
+  var containerStyle = {
+    cssFloat: 'right',
+    marginRight: 25,
+  };
+
 
   var introStyle = {
     width: 38,
@@ -71,12 +110,22 @@ window.App = window.App || {};
     margin: 21,
     position: 'relative',
     marginRight: 4,
+    marginLeft: 14,
     opacity: 0.8,
     cursor: 'pointer',
-    paddingRight: 36,
-    borderRight: 'solid 1px #ccc',
 
   };
+
+  var dividerStyle = {
+    cssFloat: 'right',
+    marginLeft: 36,
+    height: 38,
+    width: 0,
+    borderRight: 'solid 1px #ccc',
+    marginTop: 21,
+    marginLeft: 15,
+    marginRight: 5,
+  }
 
   var introHighlightStyle = {
     opacity: 1,

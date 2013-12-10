@@ -4,8 +4,8 @@
 window.App = window.App || {};
 (function(App){
 
-  var s3Prefix = 'https://s3.amazonaws.com/VPTestApp/';
-  var MAX_IM_SIZE = 400;
+  var s3Prefix = 'https://s3.amazonaws.com/snowflakelearning.com/';
+  var MAX_IM_SIZE = 256;
 
   var ImageGallery = function(parentNode, dispatcher, accountManager) {
     this.initialize(parentNode, dispatcher, accountManager);
@@ -36,8 +36,6 @@ window.App = window.App || {};
     this.div = App.Popup.prototype.createShader.call(this, this.popupDiv.parentNode);
     this.popupDiv.parentNode.appendChild(this.div);
     this.div.appendChild(this.popupDiv);
-    App.Popup.prototype.addCloser.call(this);
-    this.popupDiv.insertBefore(this.closer, this.header);
     ALXUI.styleEl(this.popupDiv, popupStyle);
     this.popupMode = true;
     App.Popup.prototype.addOkay.call(this, _onMultiSelect.bind(this));
@@ -61,6 +59,17 @@ window.App = window.App || {};
       ALXUI.styleEl(this.listContainer, {bottom: 0});
       ALXUI.hide(this.okay);
     }
+  };
+
+  p.dataListAddRow = p.addRow;
+  p.addRow = function(rowData){
+    var row = this.dataListAddRow(rowData);
+    if(this.listContainer.childNodes[1]){
+      this.listContainer.insertBefore(row.div, this.listContainer.childNodes[1]);
+    } else {
+      this.listContainer.appendChild(row.div);
+    }
+    return row;
   };
 
   p.createRow = function(data){
@@ -157,7 +166,7 @@ window.App = window.App || {};
       canv.getContext('2d').drawImage(im, 0, 0, canv.width, canv.height);
       var type = uri.split('data:')[1].split(';')[0]
       ALXUI.canvasToBlob(canv, function(fileData, type){
-        this.accountManager.pushImageToS3(fileData, type, objKey, function(){});
+        this.accountManager.pushImageToS3(fileData, type, objKey);
       }.bind(this), type);
 
     }.bind(this))

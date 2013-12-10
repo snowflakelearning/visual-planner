@@ -92,7 +92,7 @@ window.App = window.App || {};
   var mainStyle = {
     display: 'inline-block',
     width: 200,
-    height: 260,
+    height: 245,
     margin: 20,
     boxShadow: 'rgba(50, 50, 50, 0.5) 0px 0px 40px',
     backgroundColor: '#ffffff',
@@ -126,8 +126,8 @@ window.App = window.App || {};
   };
 
   var selectStyle = {
-    border: 'solid 3px #07163d',
-    margin: 17,
+    border: 'solid 5px ' + App.DARK_BLUE,
+    margin: 15,
   };
 
   var editBannerStyle = {
@@ -139,23 +139,26 @@ window.App = window.App || {};
     color: 'white',
     textAlign: 'center',
     lineHeight: 20,
-    fontSize: 16
+    fontSize: 16,
+    cursor: 'pointer'
   };
 
   var blankStyle = {
     width: 100,
     height: 100,
     margin: 50,
+    marginTop: 35,
+    marginBottom: 35,
     cursor: 'pointer'
   };
 
   var captionStyle = {
     textAlign: 'center',
     width: 190,
-    height: 40,
+    height: 30,
     padding: 5,
     paddingTop: 10,
-    paddingBottom: 10,
+    paddingBottom: 5,
     backgroundColor: '#f6f6ff',
     position: 'absolute',
     cursor: 'pointer',

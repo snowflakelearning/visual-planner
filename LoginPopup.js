@@ -11,47 +11,44 @@ window.App = window.App || {};
     {icon: 'images/devices_only.svg', text: 'Access your planner anywhere'},
   ];
 
-  var LoginPopup = function() {
-    this.initialize();
+  var LoginPopup = function(dispatcher) {
+    this.initialize(dispatcher);
   };
 
   var p = LoginPopup.prototype = new App.Popup();
   p.popupInitialize = p.initialize;
 
-  p.initialize = function() {
-    this.popupInitialize(document.body);
-    ALXUI.styleEl(this.popupDiv, {position: 'absolute'});
-    ALXUI.styleEl(this.div, {position: 'absolute', overflow: 'auto'});
-    this.banner = ALXUI.addEl(this.popupDiv, 'div', bannerStyle);
-    this.setTitle('Snowflake Learning');
-    ALXUI.styleEl(this.title, titleStyle);
-    this.banner.appendChild(this.title);
-    this.subTitle = ALXUI.addEl(this.banner, 'div', subtitleStyle);
-    this.subTitle.textContent = 'Personalized Educational Apps as Unique as Your Child';
-    this.addBannerSnowflakes();
-    this.fbLoginButton = document.getElementById('fblogin');
-    ALXUI.styleEl(this.fbLoginButton, fbStyle);
-    this.content = ALXUI.addEl(this.popupDiv, 'div', contentStyle);
-    this.content.appendChild(this.fbLoginButton);
-    this.setSize(700, 600);
-    this.intro = ALXUI.addEl(this.content, 'div', introStyle);
-    this.intro.textContent = 'Welcome to the Snowflake Visual Planner Beta!';
-    this.subIntro = ALXUI.addEl(this.content, 'div', subintroStyle);
-    this.subIntro.innerHTML = 'The Snowflake Planner lets you create customized visual activity plans in minutes.<br/>' +
-        'Your activities are hosted in the cloud, and are accessible from any computer or tablet.';
-    for(var i = 0; i < 3; i++){
-      var box = ALXUI.addEl(this.content, 'div', boxStyle);
-      var icon = ALXUI.addEl(box, 'div', iconStyle);
-      ALXUI.setBackgroundImage(icon, BULLETS[i].icon);
-      var bullet = ALXUI.addEl(box, 'div', bulletStyle);
-      bullet.textContent = BULLETS[i].text;
-    }
+  p.initialize = function(dispatcher) {
+    this.popupInitialize(document.body, dispatcher);
+    ALXUI.styleEl(this.popupDiv, {position: 'absolute', overflow: 'hidden'});
+    ALXUI.styleEl(this.div, shaderStyle);
+    this.setSize(700, 620);
+    _setupBanner.apply(this);
+    _setupStartContent.apply(this);
+    window.addEventListener('blur', function(){
+      this.blurred = true;
+    }.bind(this));
+    window.addEventListener('focus', function(){
+      this.blurred = false;
+    }.bind(this));
+    this.dispatcher.bind('addToHomeNoThanks', _onNoThanks, this);
   };
 
   p.showAuthorizing = function(){
-    ALXUI.hide(this.fbLoginButton);
-
     //TODO
+  };
+
+  p.overrideFBButton = function(){
+    //When running as a web app we need to override what the FB login button does per
+    //http://stackoverflow.com/questions/11197668/fb-login-broken-flow-for-ios-webapp
+    this.override = ALXUI.addEl(this.startContent, 'div', [fbStyle, {width: 130, height: 40, opacity: 0, zIndex:2}]);
+    this.override.addEventListener('touchstart', function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      var fbUrl = "https://m.facebook.com/dialog/oauth?client_id=" + App.FB_APP_ID + "&response_type=code&redirect_uri=" +
+          window.location.href + "&scope=email";
+      window.location = fbUrl;
+    });
   };
 
   p.addBannerSnowflakes = function(){
@@ -62,9 +59,73 @@ window.App = window.App || {};
       this.bannerSnowflakes.push(sf);
       App.css.addTransitionStyle(['all'], sf, SPIN_TIME);
       setTimeout(_createBannerSFDrop(sf), 500 + i * 400);
+      _createClickSpin(sf);
     }
     _bannerTwinkle.apply(this);
   };
+
+  function _setupBanner(){
+    this.banner = ALXUI.addEl(this.popupDiv, 'div', bannerStyle);
+    this.setTitle('Snowflake Learning');
+    ALXUI.styleEl(this.title, titleStyle);
+    this.banner.appendChild(this.title);
+    this.subTitle = ALXUI.addEl(this.banner, 'div', subtitleStyle);
+    this.subTitle.textContent = 'Personalized Educational Apps as Unique as Your Child';
+    this.addBannerSnowflakes();
+  }
+
+  function _setupStartContent(){
+    this.startContent = ALXUI.addEl(this.popupDiv, 'div', contentStyle);
+    App.css.addTransitionStyle(['margin-left'], this.startContent, 1);
+    this.intro = ALXUI.addEl(this.startContent, 'div', introStyle);
+    this.intro.textContent = 'Welcome to the Snowflake Visual Planner Beta!';
+    this.startButton = ALXUI.addEl(this.startContent, 'div', startStyle);
+    this.startButton.textContent = 'Start Planning';
+    this.fbLoginButton = document.getElementById('fblogin');
+    ALXUI.styleEl(this.fbLoginButton, [fbStyle, {display: 'block', zIndex: -1}]);
+    this.startContent.appendChild(this.fbLoginButton);
+    if(window.navigator.standalone || !App.css.osIsIOS()){
+      ALXUI.hide(this.startButton);
+      ALXUI.styleEl(this.fbLoginButton, {zIndex: 1});
+    } else {
+      App.css.addTouchClickEvent(this.startButton, function(){
+        mixpanel.track('startPlanningClicked');
+        _showHomeScreenInfo.apply(this);
+      }.bind(this));
+    }
+    this.bottomContainer = ALXUI.addEl(this.startContent, 'div', bottomContainerStyle);
+    this.subIntro = ALXUI.addEl(this.bottomContainer, 'div', subintroStyle);
+    this.subIntro.innerHTML = 'The Snowflake Planner lets you create customized visual activity plans in minutes.<br/>' +
+        'Your activities are hosted in the cloud, and are accessible from any computer or tablet.';
+    for(var i = 0; i < 3; i++){
+      var box = new App.IconBullet(this.bottomContainer, this.dispatcher, BULLETS[i]);
+    }
+  }
+
+  function _showHomeScreenInfo(){
+    this.addToHome = new App.AddToHome(this.popupDiv, this.dispatcher);
+    ALXUI.styleEl(this.addToHome.div, {marginLeft: 700});
+    App.css.addTransitionStyle(['margin-left'], this.addToHome.div, 1);
+    ALXUI.styleEl(this.startContent, {marginLeft: -700});
+    setTimeout(function(){
+      ALXUI.styleEl(this.addToHome.div, {marginLeft: 0});
+    }.bind(this), 30);
+  }
+
+  function _onNoThanks(){
+    mixpanel.track('userClickedNoThanksToWebApp');
+    ALXUI.styleEl(this.fbLoginButton, {zIndex: 1});
+    ALXUI.hide(this.startButton);
+    this.intro.textContent = 'Please log in with Facebook to get started';
+    ALXUI.styleEl(this.startContent, {marginLeft: 0});
+    ALXUI.styleEl(this.addToHome.div, {marginLeft: 700});
+  }
+
+  function _createClickSpin(flake){
+    App.css.addTouchClickEvent(flake, function(){
+      _spinFlake(flake);
+    });
+  }
 
   function _createBannerSFDrop(sf){
     return function(){
@@ -76,6 +137,9 @@ window.App = window.App || {};
   function _bannerTwinkle(){
     clearTimeout(this.bannerTwinkleTO);
     this.bannerTwinkleTO = setTimeout(_bannerTwinkle.bind(this), 5000 + Math.random() * 5000);
+    if(this.blurred){
+      return;
+    }
     var flake = this.bannerSnowflakes[Math.floor(Math.random() * NUM_SNOWFLAKES)];
     _spinFlake(flake);
   };
@@ -95,7 +159,8 @@ window.App = window.App || {};
     position: 'absolute',
     left: '50%',
     marginLeft: -62.5,
-    bottom: 15,
+    bottom: 240,
+    width: 125,
   };
 
   var bannerStyle = {
@@ -139,10 +204,9 @@ window.App = window.App || {};
   var contentStyle = {
     position: 'absolute',
     top: 235,
-    bottom: 0,
-    right: 0,
+    width: '100%',
     fontFamily: App.MAIN_FONT,
-    left: 0,
+    bottom: 0,
   };
 
   var introStyle = {
@@ -158,28 +222,40 @@ window.App = window.App || {};
     textAlign: 'center',
     color: '#434343',
     fontSize: 16,
-    marginLeft: 10,
-    marginRight: 10,
+    margin: 10,
   };
 
-  var boxStyle = {
-    marginTop: 35,
-    width: 200,
-    marginLeft: 25,
-    height: 140,
-    cssFloat: 'left',
+  var bottomContainerStyle = {
+    position: 'absolute',
+    width: '100%',
+    height: 210,
+    bottom: 0,
+    backgroundColor: '#f2f2f2',
+  };
+
+  var shaderStyle = {
+    position: 'absolute',
+    minHeight: 620,
+    backgroundImage: App.css.generateBrowserSpecificGradient('#888', '#333', 'radial', '50%', '50%'),
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+  };
+
+  var startStyle = {
+    position: 'absolute',
+    left: '50%',
+    marginLeft: -150,
+    bottom: 245,
+    width: 300,
+    height: 50,
+    backgroundColor: '#7580ff',
+    border: '1px solid ' + App.DARK_BLUE,
+    color: 'white',
     textAlign: 'center',
-  };
-
-  var iconStyle = {
-    width: 200,
-    height: 70,
-    marginBottom: 10,
-  };
-
-  var bulletStyle = {
-    width: 200,
-    height: 30,
+    borderRadius: 3,
+    fontSize: 26,
+    lineHeight: 50,
+    cursor: 'pointer',
+    position: 'absolute',
   };
 
   App.LoginPopup = LoginPopup;

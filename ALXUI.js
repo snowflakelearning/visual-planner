@@ -72,9 +72,11 @@ window.ALXUI = window.ALXUI || {};
   ui.setBackgroundImage = function(el, url, noContain){
     if(url === App.BLANK_IMAGE_TAG){
       this.setBackgroundImage(el, App.BLANK_IMAGE_URL, noContain);
-      return;
+    } else if(App.getImageData(url).dataURI){
+      el.style.backgroundImage = 'url(' + App.getImageData(url).dataURI + ')';
+    } else {
+      el.style.backgroundImage = 'url(' + url + ')';
     }
-    el.style.backgroundImage = 'url(' + url + ')';
     if(!noContain){
       ALXUI.styleEl(el, containStyle);
     }

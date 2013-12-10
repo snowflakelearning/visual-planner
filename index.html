@@ -1,19 +1,36 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link href='//fonts.googleapis.com/css?family=Oxygen' rel='stylesheet' type='text/css'>
+    <meta charset="UTF-8">
     <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="viewport" content="width=1024">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="images/apple-touch-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="images/apple-touch-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="images/apple-touch-icon-152x152.png">
+    <!-- iPad (non-Retina) (Portrait) -->
+    <link href="images/apple-touch-startup-image-768x1004.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait)" rel="apple-touch-startup-image" />
+    <!-- iPad (non-Retina) (Landscape) -->
+    <link href="images/apple-touch-startup-image-748x1024.png" media="(device-width: 768px) and (orientation:landscape)" rel="apple-touch-startup-image" />
+    <!-- iPad (Retina) (Portrait)   -->
+    <link href="images/apple-touch-startup-image-1536x2008.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait) and (-webkit-min-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
+    <!-- iPad (Retina) (Landscape)   -->
+    <link href="images/apple-touch-startup-image-2048x1496.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape) and (-webkit-min-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
     <title>Snowflake Visual Planner</title>
-    <script type="text/javascript" src="Environment.js"></script>
-    <script type="text/javascript" src="mixpanel.js"></script>
     <script type="text/javascript" src="Css.js"></script>
     <script type="text/javascript" src="BrowserTest.js"></script>
+    <script type="text/javascript" src="Environment.js"></script>
+    <script type="text/javascript" src="mixpanel.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.0/backbone-min.js"></script>
     <script type="text/javascript" src="ALXUI.js"></script>
-    <script type="text/javascript" src="https://sdk.amazonaws.com/js/aws-sdk-2.0.0-rc1.min.js"></script>
+    <script type="text/javascript" src="//sdk.amazonaws.com/js/aws-sdk-2.0.0-rc1.min.js"></script>
     <script type="text/javascript" src="Popup.js"></script>
     <script type="text/javascript" src="LoginPopup.js"></script>
     <script type="text/javascript" src="LabeledInput.js"></script>
+    <script type="text/javascript" src="StorageManager.js"></script>
     <script type="text/javascript" src="AccountManager.js"></script>
     <script type="text/javascript" src="DataList.js"></script>
     <script type="text/javascript" src="DataRow.js"></script>
@@ -31,12 +48,17 @@
     <script type="text/javascript" src="IntroManager.js"></script>
     <script type="text/javascript" src="Uservoice.js"></script>
     <script type="text/javascript" src="CanvasShader.js"></script>
-    <link href='https://fonts.googleapis.com/css?family=Oxygen' rel='stylesheet' type='text/css'>
+    <script type="text/javascript" src="IntroPopup.js"></script>
+    <script type="text/javascript" src="AddToHome.js"></script>
+    <script type="text/javascript" src="IconBullet.js"></script>
+    <script type="text/javascript" src="WebsqlDB.js"></script>
+    <script type="text/javascript" src="WebsqlBucket.js"></script>
+    <script type="text/javascript" src="LoadingScreen.js"></script>
+    <script type="text/javascript" src="ga.js"></script>
   </head>
   <body>
     <div id="fb-root"></div>
     <script type="text/javascript">
-
       var bodyStyle = {
         margin: 0,
         padding: 0,
@@ -49,24 +71,30 @@
 
       mixpanel.track('pageLoad');
 
-      window.fbAsyncInit = function(){
-        var accountManager = new App.AccountManager(launch, dispatcher);
-      };
+
+
+      var loadingScreen = new App.LoadingScreen(document.body, dispatcher);
+      var accountManager = new App.AccountManager(launch, dispatcher);
 
       function launch(am){
         var vp = new App.VisualPlanner(document.body, am, dispatcher);
         vp.load();
+        am.onLogin = function(){};
       }
 
-      // Load the Facebook SDK asynchronously
-      (function(d, s, id){
-        var js, fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) {return;}
-        js = d.createElement(s); js.id = id;
-        js.src = "//connect.facebook.net/en_US/all.js";
-        fjs.parentNode.insertBefore(js, fjs);
-      }(document, 'script', 'facebook-jssdk'));
+
+      var logout = ALXUI.addEl(document.body, 'div', { left: App.css.generateBrowserCalcString('50% - 20px'), top: 10, position: 'absolute', color: '#ddd',
+          textDecoration: 'underline', zIndex: 10, cursor: 'pointer'});
+      logout.textContent = 'logout';
+      if(window.location.href.indexOf('staging') === -1){
+        ALXUI.hide(logout);
+      }
+      logout.addEventListener('click', function(){
+        FB.logout();
+        setTimeout(function(){
+          window.location = window.location;
+        }, 1000);
+      });
     </script>
-    <div id="fblogin" class="fb-login-button" data-width="200" data-autologoutlink="true" data-size="xlarge" scope="email"></div>
   </body>
 </html>

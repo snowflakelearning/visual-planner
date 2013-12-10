@@ -19,6 +19,15 @@ window.App = window.App || {};
 
   };
 
+  App.css.addMouseOver = function(el, onStyle, offStyle){
+    el.addEventListener('mouseover', function(){
+      ALXUI.styleEl(el, onStyle);
+    });
+    el.addEventListener('mouseout', function(){
+      ALXUI.styleEl(el, offStyle);
+    });
+  };
+
   App.css.addTransitionEnd = function(obj, callback, context) {
     var func = callback.bind(context);
     obj.addEventListener('webkitTransitionEnd', func);
@@ -91,7 +100,7 @@ window.App = window.App || {};
         return "-moz-linear-gradient" + gradientArgString
       }
     } else if(type == 'radial') {
-      if(App.css.cssbrowserIsOpera() ||
+      if(App.css.browserIsOpera() ||
               (App.css.browserIsIE() && App.css.getIEVersion() === 11)) {
         return 'radial-gradient(closest-corner circle at ' +
             pos1 + ' ' + pos2 + ', ' + col1 + ', ' + col2 + ')';
@@ -117,7 +126,7 @@ window.App = window.App || {};
   };
 
   App.css.browserIsIE = function() {
-    return navigator.userAgent.indexOf('MSIE') != -1;
+    return window.ActiveXObject || "ActiveXObject" in window;
   };
 
   App.css.getIEVersion = function(){
@@ -162,8 +171,8 @@ window.App = window.App || {};
     var func = function(e){
       callback.apply(context, [e]);
     };
-    //el.addEventListener('touchstart', func);
-    el.addEventListener('mouseup', func)
+    //el.addEventListener('touchstart', func);  //TODO implement non laggy touch events
+    el.addEventListener('click', func)
   };
 
   App.css.fixWidth = function(div, targetPxWidth){

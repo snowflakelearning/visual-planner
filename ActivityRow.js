@@ -6,7 +6,10 @@ window.App = window.App || {};
 
   App.BOX_WIDTH = 1024;
 
+  var ARROW_IMAGE = 'images/up-arrow.svg';
   var HIDE_ICON = 'images/hide-bar.svg';
+  var im = ALXUI.createEl('img');
+  im.src = HIDE_ICON;
 
   var ActivityRow = function(parentNode, dispatcher, data) {
     this.initialize(parentNode, dispatcher, data);
@@ -68,7 +71,7 @@ window.App = window.App || {};
       ALXUI.setBackgroundImage(this.thumb, this.data.where);
       this.header.textContent = (num + 1) + '. ' + data.name;
       ALXUI.show(this.hide);
-      ALXUI.show(this.whereInput.div);
+      //ALXUI.show(this.whereInput.div);
       ALXUI.show(this.whoInput.div);
     } else {
       ALXUI.hide(this.hide);
@@ -77,6 +80,7 @@ window.App = window.App || {};
       ALXUI.setBackgroundImage(this.thumb, this.data.icon);
       ALXUI.setBackgroundImage(this.whereThumb, this.data.where);
       ALXUI.styleEl(this.div, {backgroundColor: 'white'});
+      ALXUI.hide(this.arrowContainer);
     }
     this.whoThumbContainer.populate(this.data.who);
 
@@ -172,14 +176,24 @@ window.App = window.App || {};
     App.css.addTouchClickEvent(this.whoInput.input, _showWhoPopup, this);
     App.css.addTouchClickEvent(this.whereInput.input, _showWherePopup, this);
     App.css.addTouchClickEvent(this.thumb, _showThumbPopup, this);
+    this.arrowContainer = ALXUI.addEl(this.inputContainer, 'div', arrowContainerStyle);
+    this.upArrow = ALXUI.addEl(this.arrowContainer, 'div', arrowStyle);
+    this.downArrow = ALXUI.addEl(this.arrowContainer, 'div', [arrowStyle, {top: 50}]);
+    ALXUI.setBackgroundImage(this.upArrow, ARROW_IMAGE);
+    ALXUI.setBackgroundImage(this.downArrow, ARROW_IMAGE);
+    App.css.setScaleTransform(this.downArrow, 1, -1);
+    App.css.addTouchClickEvent(this.upArrow, function(){
+      this.dispatcher.trigger('shiftStep', true, this.data.id, this.data.parentId)
+    }.bind(this));
+    App.css.addTouchClickEvent(this.downArrow, function(){
+      this.dispatcher.trigger('shiftStep', false, this.data.id, this.data.parentId)
+    }.bind(this));
   }
 
   function _updateFromInput(){
     this.data.name = this.nameInput.input.value;
     this.data.when = this.whenInput.input.value;
     this.update(this.data);
-    //TODO who / where editing
-    //TODO update our data in the process
   }
 
   function _addHideStep(){
@@ -352,6 +366,7 @@ window.App = window.App || {};
   };
 
   var rightContainerStyle = {
+    position: 'relative',
     width: App.css.generateBrowserCalcString('100% - 220px'),
     height: '100%',
     cssFloat: 'left',
@@ -378,11 +393,26 @@ window.App = window.App || {};
     width: 32,
     height: 32,
     position: 'absolute',
-    left: 975,
+    right: 0,
     top: 8,
     cursor: 'pointer',
     backgroundColor: '#ddd',
     borderRadius: 3,
+  };
+
+  var arrowContainerStyle = {
+    height: 80,
+    left: -35,
+    top: 10,
+    width: 30,
+    position: 'absolute',
+  };
+
+  var arrowStyle = {
+    width: 30,
+    height: 30,
+    position: 'absolute',
+    top: 0,
   };
 
   App.ActivityRow = ActivityRow;

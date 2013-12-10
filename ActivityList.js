@@ -21,7 +21,7 @@ window.App = window.App || {};
     this.headerTitle.textContent = 'My Activities';
     this.preview = ALXUI.addEl(this.header, 'div', buttonStyle);
     this.preview.textContent = 'Edit';
-    this.add = ALXUI.addEl(this.header, 'div', [buttonStyle, {right: 100, display: 'none'}]);
+    this.add = ALXUI.addEl(this.header, 'div', [buttonStyle, {right: 115, display: 'none'}]);
     this.add.textContent = 'Add';
     App.css.addTouchClickEvent(this.add, _onAdd, this);
     App.css.addTouchClickEvent(this.preview, _onPreview, this);
@@ -38,7 +38,10 @@ window.App = window.App || {};
     row.toggleEditView(this.editMode);
     if(rowData.parentId === null){
       this.listContainer.appendChild(row.div);
-      _insertAddButton.apply(this, [rowData.id]);
+      var addButton = _insertAddButton.apply(this, [rowData.id]);
+      if(this.dataRows.length === 1){
+        this.topAddbutton = addButton;
+      }
     } else {
       this.listContainer.insertBefore(row.div, this.addButtons[rowData.parentId]);
     }
@@ -104,6 +107,10 @@ window.App = window.App || {};
   function _onAdd(){
     this.dispatcher.trigger('addActivity', null);
     mixpanel.track('addActivityClick');
+    setTimeout(function(e){
+      this.listContainer.lastChild.scrollIntoView();
+      console.log('scroll!')
+    }.bind(this), 500)
   }
 
   function _onEditMode(on){
@@ -120,6 +127,11 @@ window.App = window.App || {};
   }
 
   function _onPreview(){
+    if(this.previewing && !window.navigator.onLine){
+      alert('Editing is disabled while you are offline.  If you would like us to add offline editing please ' +
+            'let us know by emailing us at snowflake@alxgroup.net.');
+      return;
+    }
     this.previewing = !this.previewing;
     this.dispatcher.trigger('editMode', !this.previewing);
     if(this.previewing){
@@ -153,6 +165,7 @@ window.App = window.App || {};
       this.listContainer.appendChild(addButton);
     }
     App.css.addTouchClickEvent(addButton, _createAddClick.apply(this,[parentId]));
+    return addButton;
   }
 
   function _createAddClick(parentId){
@@ -212,7 +225,7 @@ window.App = window.App || {};
     cursor: 'pointer',
     position: 'absolute',
     top: 5,
-    right: 5,
+    right: 15,
   };
 
   var headerTextStyle = {

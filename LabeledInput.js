@@ -38,10 +38,10 @@ window.App = window.App || {};
   };
 
   var inputStyle = {
-    height: 24,
+    height: 18,
     cssFloat: 'left',
     marginLeft: 10,
-    width: App.css.generateBrowserCalcString('100% - 120px'),
+    width: App.css.generateBrowserCalcString('100% - 80px'),
   };
 
   App.LabeledInput = LabeledInput;

@@ -21,9 +21,16 @@ window.App = window.App || {};
     App.css.addTransitionStyle('top', this.emptyArrow, 1);
     this.arrowUp = true;
     setInterval(_animateEmpty.bind(this), 800);
+    this.editMode = false;
   };
 
-  p.show = function(){
+  p.show = function(detailView){
+    if(detailView){
+      this.emptyText.innerHTML =  '~ No steps found ~<br/>Click the "Show all steps" button to view your steps.';
+      ALXUI.styleEl(this.emptyArrow, {right: 80});
+    } else {
+      _toggleEditMode.apply(this, [this.editMode]);
+    }
     ALXUI.show(this.div)
   };
 
@@ -32,12 +39,13 @@ window.App = window.App || {};
   };
 
   function _toggleEditMode(on){
+    this.editMode = on;
     if(on){
       this.emptyText.innerHTML = '~ No activities found ~<br/>Click the "Add" button create a new activity.';
-      ALXUI.styleEl(this.emptyArrow, {right: 125});
+      ALXUI.styleEl(this.emptyArrow, {right: 140});
     } else {
       this.emptyText.innerHTML = '~ No activities found ~<br/>Go to "Edit" mode to start adding activities.';
-      ALXUI.styleEl(this.emptyArrow, {right: 30});
+      ALXUI.styleEl(this.emptyArrow, {right: 38});
     }
   }
 
@@ -52,7 +60,7 @@ window.App = window.App || {};
 
   var emptyArrowStyle = {
     position: 'absolute',
-    right: 120,
+    right: 133,
     height: 30,
     width: 30,
     top: 10,

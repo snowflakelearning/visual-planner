@@ -16,7 +16,7 @@ window.App = window.App || {};
   p.initialize = function(parentNode, dispatcher) {
     this.div = ALXUI.addEl(parentNode, 'div');
     this.header = ALXUI.addEl(this.div, 'div', headerStyle);
-    this.listContainer = ALXUI.addEl(this.div, 'div');
+    this.listContainer = ALXUI.addEl(this.div, 'div', listStyle);
     this.dispatcher = dispatcher;
     this.dataRows = [];
   };
@@ -78,6 +78,9 @@ window.App = window.App || {};
     textAlign: 'center',
     fontWeight: 700,
     lineHeight: HEADER_FONT_SIZE * 2.5,
+  };
+
+  var listStyle = {
   };
 
   App.DataList = DataList;
