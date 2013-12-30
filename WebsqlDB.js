@@ -3,6 +3,9 @@
  */
 window.App = window.App || {};
 (function(App){
+
+  var quotedAttributes = ['id', 'email', 'name', 'dev'];
+
   var WebsqlDB = function(dispatcher) {
     if(dispatcher){
       this.initialize(dispatcher);
@@ -53,8 +56,12 @@ window.App = window.App || {};
     });
   };
 
-  p.overwriteUserData = function(userData, activityJson){
-    var sd = _serializeUserData.apply(this, [userData, activityJson]);
+  p.overwriteUserData = function(userData, activityData){
+    if(!userData || !userData.Item || !userData.Item.id || !userData.Item.id.S){
+      console.log('Null user in OVERWRITE LOCAL', userData);
+      return;
+    }
+    var sd = _serializeUserData.apply(this, [userData, activityData]);
     this.db.transaction(function(tx){
       tx.executeSql('SELECT * from Users where id=?', [sd.id],function(tx, res){
         if(res.rows.length === 1){
@@ -79,24 +86,30 @@ window.App = window.App || {};
     });
   };
 
-  function _serializeUserData(data, activityJson){
+  function _serializeUserData(data, activityData){
     var res = {};
-    for(var x in data){
-      if(x === 'imageData'){
-        var arr = [];
-        for(var i = 0; i < data.imageData.length; i++){
-          arr.push(App.getImageData(data.imageData[i].url));
-        }
-        res['imageData'] = JSON.stringify(arr);
+    for(var x in data.Item){
+      if(quotedAttributes.indexOf(x) !== -1){
+        res[x] = '"' + data.Item[x].S + '"';
       } else {
-        res[x] = JSON.stringify(data[x]);
+        res[x] = data.Item[x].S;
       }
     }
-    res.activityJson = activityJson || '';
+    res.activityJson = JSON.stringify(activityData) || '';
+    if(res.imageData){
+      var imData = JSON.parse(res.imageData);
+      for(var i = 0; i < imData.length; i++){
+        var URI = App.getImageData(imData[i].url).dataURI
+        if(URI){
+          imData[i].dataURI = URI;
+        }
+      }
+      res.imageData = JSON.stringify(imData);
+    }
     return res;
   };
 
-  //Removes starting and enidng double quotes
+  //Removes starting and ending double quotes
   function _trimStartEndQuotes(str){
     if(str && str.indexOf('"') === 0 && str.lastIndexOf('"') === str.length - 1){
       return str.substring(1, str.length - 1);

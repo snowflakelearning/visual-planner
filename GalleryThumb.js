@@ -4,41 +4,35 @@
 window.App = window.App || {};
 (function(App){
 
-  var BLANK_IMG = 'images/addImage.png';
-  var PLUS_TEXT = 'Click the plus button above to add a new image';
+  var BLANK_IMG = 'images/plus.svg';
+  var PLUS_TEXT = 'Click the plus button to add a new image';
 
-  var GalleryThumb = function(parentNode, dispatcher) {
-    this.initialize(parentNode, dispatcher);
+  var GalleryThumb = function(parentNode, dispatcher, data) {
+    this.initialize(parentNode, dispatcher, data);
   };
 
   var p = GalleryThumb.prototype = new App.DataRow();
 
   p.dataRowInitialize = p.initialize;
-  p.initialize = function(parentNode, dispatcher) {
-    this.dataRowInitialize(parentNode, dispatcher);
-    ALXUI.styleEl(this.div, mainStyle);
-    this.addCloser();
+  p.initialize = function(parentNode, dispatcher, data) {
+    this.dataRowInitialize(parentNode, dispatcher, data, mainStyle);
+    this.addCloser(null, null, function(){});
 
     //FOR NOW DELETING IMAGES ISN'T SUPPORTED
     ALXUI.hide(this.closer);
 
-    this.thumb = ALXUI.addEl(this.div, 'div', thumbStyle);
-    this.captionDiv = ALXUI.addEl(this.div, 'div', captionStyle);
-    this.thumbClick = null;
-    this.editBanner = ALXUI.addEl(this.div, 'div', editBannerStyle);
-    this.editBanner.textContent = 'Click to edit';
-    this.editBanner.addEventListener('click', _onEditClick.bind(this));
-    this.captionDiv.addEventListener('click', _onEditClick.bind(this));
-    this.div.addEventListener('click', _onClick.bind(this));
+    this.thumb = this.addDiv(thumbStyle);
+    this.captionDiv = this.addDiv(captionStyle, null, _onEditClick.bind(this));
+    this.editBanner = this.addDiv(editBannerStyle, 'Click to edit', _onEditClick.bind(this));
+    App.css.addTouchClickEvent(this.div, _onClick.bind(this));
   };
 
-  p.setAppearance = function(imageData){
+  p.dataRowUpdate = p.update
+  p.update = function(imageData){
+    this.dataRowUpdate(imageData);
     ALXUI.setBackgroundImage(this.thumb, imageData.url);
     ALXUI.styleEl(this.thumb, thumbStyle);
     this.captionDiv.textContent = imageData.text || 'No name';
-    //TODO deal with touchstart
-    this.thumb.removeEventListener('click', this.thumbClick);
-    this.update(imageData);
   };
 
   p.select = function(selected){
@@ -50,11 +44,11 @@ window.App = window.App || {};
   }
 
   p.goBlank = function() {
-    this.setAppearance({url: BLANK_IMG, text: PLUS_TEXT});
+    this.update({url: BLANK_IMG, text: PLUS_TEXT});
+    ALXUI.styleEl(this.captionDiv, {bottom: 20});
     ALXUI.styleEl(this.thumb, blankStyle);
-    this.thumb.addEventListener('click', this.thumbClick);
     this.input = ALXUI.addEl(this.thumb, 'input', inputStyle);
-    this.input.addEventListener('click', function(e){
+    App.css.addTouchClickEvent(this.input, function(e){
       this.input.value = '';
     }.bind(this));
     this.input.addEventListener('change', _upload.bind(this));
@@ -96,8 +90,8 @@ window.App = window.App || {};
     margin: 20,
     boxShadow: 'rgba(50, 50, 50, 0.5) 0px 0px 40px',
     backgroundColor: '#ffffff',
-    fontFamily: 'Helvetica',
     border: 0,
+    position: 'relative',
   };
 
   var inputStyle = {
@@ -120,7 +114,7 @@ window.App = window.App || {};
 
   var thumbStyle = {
     width: 160,
-    height: 160,
+    height: 140,
     margin: 20,
     backgroundColor: 'transparent',
   };
@@ -133,7 +127,6 @@ window.App = window.App || {};
   var editBannerStyle = {
     height: 20,
     width: 200,
-    marginTop: -20,
     position: 'absolute',
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
     color: 'white',
@@ -162,6 +155,7 @@ window.App = window.App || {};
     backgroundColor: '#f6f6ff',
     position: 'absolute',
     cursor: 'pointer',
+    bottom: 5,
   };
 
   App.GalleryThumb = GalleryThumb;

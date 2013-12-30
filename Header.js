@@ -8,20 +8,19 @@ window.App = window.App || {};
     this.initialize(parentNode, dispatcher);
   };
 
-  var p = Header.prototype;
+  var p = Header.prototype = new App.VPBase();
+  p.baseInitialize = p.initialize;
+
   p.initialize = function(parentNode, dispatcher) {
-    this.dispatcher = dispatcher;
-    this.div = ALXUI.addEl(parentNode, 'div', headerStyle);
-    this.title = ALXUI.addEl(this.div, 'div', titleStyle);
-    this.title.textContent = 'Snowflake Planner';
-    this.buttonContainer = ALXUI.addEl(this.div, 'div', containerStyle);
-    this.divider = ALXUI.addEl(this.buttonContainer, 'div', dividerStyle);
-    this.introButton = ALXUI.addEl(this.buttonContainer, 'div', introStyle);
-    this.divider2 = ALXUI.addEl(this.buttonContainer, 'div', dividerStyle);
-    this.onlineIcon = ALXUI.addEl(this.buttonContainer, 'div', [introStyle, {opacity: 1, cursor: 'default'}]);
+    this.baseInitialize(parentNode, dispatcher, headerStyle);
+    this.title = this.addDiv(titleStyle, 'Snowflake Planner');
+    this.buttonContainer = this.addDiv(containerStyle);
+    this.divider = ALXUI.addDivTo(this.buttonContainer, dividerStyle);
+    this.introButton = ALXUI.addDivTo(this.buttonContainer, introStyle, null, _onIntroClick.bind(this));
+    this.divider2 = ALXUI.addDivTo(this.buttonContainer, dividerStyle);
+    this.onlineIcon = ALXUI.addDivTo(this.buttonContainer, [introStyle, {opacity: 1, cursor: 'default'}]);
     ALXUI.setBackgroundImage(this.onlineIcon, ONLINE);
     ALXUI.setBackgroundImage(this.introButton, INTRO_IMAGE);
-    App.css.addTouchClickEvent(this.introButton, _onIntroClick.bind(this));
     App.css.addMouseOver(this.introButton, introHighlightStyle, introStyle);
     this.dispatcher.bind('online', _onOnline.bind(this));
     this.dispatcher.bind('offline', _onOffline.bind(this));

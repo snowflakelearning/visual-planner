@@ -3,16 +3,18 @@
  */
 window.App = window.App || {};
 (function(App){
-  var DataRow = function(parentNode, dispatcher, data) {
+  var DataRow = function(parentNode, dispatcher, data, style) {
     if(parentNode){
-      this.initialize(parentNode, dispatcher, data);
+      this.initialize(parentNode, dispatcher, data, style);
     }
   };
 
+  var p = DataRow.prototype = new App.VPBase();
+  p.baseInitialize = p.initialize;
+
   var p = DataRow.prototype;
-  p.initialize = function(parentNode, dispatcher, data) {
-    this.div = ALXUI.addEl(parentNode, 'div');
-    this.dispatcher = dispatcher;
+  p.initialize = function(parentNode, dispatcher, data, style) {
+    this.baseInitialize(parentNode, dispatcher, style);
     this.data = data;
 };
 
@@ -22,19 +24,10 @@ window.App = window.App || {};
 
   p.stripe = function(num){
     if(num % 2 === 0){
-      ALXUI.styleEl(this.div, evenStyle);
+      this.style(evenStyle);
     } else {
-      ALXUI.styleEl(this.div, oddStyle);
+      this.style(oddStyle);
     }
-  };
-
-  p.addCloser = function(){
-    this.closer = ALXUI.addEl(this.div, 'div', closerStyle);
-    this.closer.textContent = 'X';
-    this.closer.addEventListener('click', function(e){
-      e.stopPropagation();
-      this.dispatcher.trigger('delete', this);
-    }.bind(this));
   };
 
   var oddStyle = {
@@ -43,19 +36,6 @@ window.App = window.App || {};
 
   var evenStyle = {
     backgroundColor: '#ffffff',
-  };
-
-  var closerStyle = {
-    cssFloat: 'right',
-    height: 30,
-    width: 30,
-    lineHeight: 30,
-    fontSize: 22,
-    backgroundColor: '#999',
-    color: 'white',
-    textAlign: 'center',
-    fontFamily: 'helvetica',
-    cursor: 'pointer',
   };
 
   App.DataRow = DataRow;

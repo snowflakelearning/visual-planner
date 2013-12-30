@@ -10,14 +10,14 @@ window.App = window.App || {};
     this.initialize(parentNode, dispatcher);
   };
 
-  var p = Empty.prototype;
+  var p = Empty.prototype = new App.VPBase();
+  p.baseInitialize = p.initialize;
+
   p.initialize = function(parentNode, dispatcher) {
-    this.dispatcher = dispatcher;
-    this.div = ALXUI.addEl(parentNode, 'div', emptyStyle);
-    this.emptyArrow = ALXUI.addEl(this.div, 'div', emptyArrowStyle);
+    this.baseInitialize(parentNode, dispatcher, emptyStyle);
+    this.emptyArrow = this.addDiv(emptyArrowStyle);
     ALXUI.setBackgroundImage(this.emptyArrow, EMPTY_ARROW);
-    this.emptyText = ALXUI.addEl(this.div, 'div', emptyTextStyle);
-    this.dispatcher.bind('editMode', _toggleEditMode, this);
+    this.emptyText = this.addDiv(emptyTextStyle);
     App.css.addTransitionStyle('top', this.emptyArrow, 1);
     this.arrowUp = true;
     setInterval(_animateEmpty.bind(this), 800);
@@ -29,25 +29,11 @@ window.App = window.App || {};
       this.emptyText.innerHTML =  '~ No steps found ~<br/>Click the "Show all steps" button to view your steps.';
       ALXUI.styleEl(this.emptyArrow, {right: 80});
     } else {
-      _toggleEditMode.apply(this, [this.editMode]);
+      this.emptyText.innerHTML = '~ No activities found ~<br/>Click the "Create New" button create a new activity.';
+      ALXUI.styleEl(this.emptyArrow, {right: 80});
     }
     ALXUI.show(this.div)
   };
-
-  p.hide = function(){
-    ALXUI.hide(this.div);
-  };
-
-  function _toggleEditMode(on){
-    this.editMode = on;
-    if(on){
-      this.emptyText.innerHTML = '~ No activities found ~<br/>Click the "Add" button create a new activity.';
-      ALXUI.styleEl(this.emptyArrow, {right: 140});
-    } else {
-      this.emptyText.innerHTML = '~ No activities found ~<br/>Go to "Edit" mode to start adding activities.';
-      ALXUI.styleEl(this.emptyArrow, {right: 38});
-    }
-  }
 
   function _animateEmpty(){
     this.arrowUp = !this.arrowUp;
@@ -69,7 +55,7 @@ window.App = window.App || {};
   var emptyStyle = {
     position: 'relative',
     width: '100%',
-    height: '100%',
+    //height: '100%',
   };
 
   var emptyTextStyle = {

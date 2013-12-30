@@ -6,3 +6,4 @@ typeof d?c=b[d]=[]:d="mixpanel";c.people=c.people||[];c.toString=function(b){var
   b._i.push([a,e,d])};b.__SV=1.2}})(document,window.mixpanel||[]);
 
 mixpanel.init(App.MP_ID);
+mixpanel.track('pageLoad');

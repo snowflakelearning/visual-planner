@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://web.resource.org/cc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:svg="http://www.w3.org/2000/svg" id="svg1871" viewBox="0 0 159.33 151.82" version="1.0">
+  <g id="layer1" transform="translate(-103.19 -530.74)">
+    <path id="path1872" d="m256.76 532.51c-30.93 26.36-62.8 54.25-79.01 92.45-2.95 6.4-5.39 13.45-7.62 19.93-14.72-19.23-39.04-26.77-60.53-35.72-10.08-4.26-6.53 6.57-1.17 9.48 26.87 13.36 51.68 39.12 67.34 63.91 11.65-55.62 49.6-101.6 85.24-144.45 3.01-3.56 1.51-10.7-4.25-5.6z" fill="#00d400" fill-rule="evenodd"/>
+  </g>
+  <metadata>
+    <rdf:RDF>
+      <cc:Work>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+        <cc:license rdf:resource="http://creativecommons.org/licenses/publicdomain/"/>
+        <dc:publisher>
+          <cc:Agent rdf:about="http://openclipart.org/">
+            <dc:title>Openclipart</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:title>Green Checkmark and Red Minus</dc:title>
+        <dc:date>2009-05-18T07:22:45</dc:date>
+        <dc:description>Two Symbols:&#xD;\nGreen Checkmark Symbol (aka "yes"),&#xD;\nRed Minus Symbol (aka "no")</dc:description>
+        <dc:source>http://openclipart.org/detail/26048/green-checkmark-and-red-minus-by-anselmus</dc:source>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Anselmus</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>check</rdf:li>
+            <rdf:li>checkmark</rdf:li>
+            <rdf:li>clip art</rdf:li>
+            <rdf:li>clipart</rdf:li>
+            <rdf:li>image</rdf:li>
+            <rdf:li>media</rdf:li>
+            <rdf:li>png</rdf:li>
+            <rdf:li>public domain</rdf:li>
+            <rdf:li>svg</rdf:li>
+            <rdf:li>symbol</rdf:li>
+            <rdf:li>uncheck</rdf:li>
+            <rdf:li>untick</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+      </cc:Work>
+      <cc:License rdf:about="http://creativecommons.org/licenses/publicdomain/">
+        <cc:permits rdf:resource="http://creativecommons.org/ns#Reproduction"/>
+        <cc:permits rdf:resource="http://creativecommons.org/ns#Distribution"/>
+        <cc:permits rdf:resource="http://creativecommons.org/ns#DerivativeWorks"/>
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>

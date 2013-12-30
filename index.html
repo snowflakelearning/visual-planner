@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="viewport" content="width=1024">
+    <meta id="viewport" name="viewport" content="width=device-width, maximum-scale=1.0, minimum-scale=1.0">
     <link rel="apple-touch-icon" href="images/apple-touch-icon-60x60.png">
     <link rel="apple-touch-icon" sizes="76x76" href="images/apple-touch-icon-76x76.png">
     <link rel="apple-touch-icon" sizes="120x120" href="images/apple-touch-icon-120x120.png">
@@ -19,23 +19,30 @@
     <!-- iPad (Retina) (Landscape)   -->
     <link href="images/apple-touch-startup-image-2048x1496.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape) and (-webkit-min-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
     <title>Snowflake Visual Planner</title>
-    <script type="text/javascript" src="Css.js"></script>
-    <script type="text/javascript" src="BrowserTest.js"></script>
+    <script type="text/javascript" src="ga.js"></script>
     <script type="text/javascript" src="Environment.js"></script>
     <script type="text/javascript" src="mixpanel.js"></script>
+    <script type="text/javascript" src="Css.js"></script>
+    <script type="text/javascript" src="BrowserTest.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.0/backbone-min.js"></script>
+    <script type="text/javascript" src="//sdk.amazonaws.com/js/aws-sdk-2.0.0-rc4.min.js"></script>
     <script type="text/javascript" src="ALXUI.js"></script>
-    <script type="text/javascript" src="//sdk.amazonaws.com/js/aws-sdk-2.0.0-rc1.min.js"></script>
+    <script type="text/javascript" src="UIBase.js"></script>
+    <script type="text/javascript" src="VPBase.js"></script>
     <script type="text/javascript" src="Popup.js"></script>
     <script type="text/javascript" src="LoginPopup.js"></script>
     <script type="text/javascript" src="LabeledInput.js"></script>
+    <script type="text/javascript" src="ImageDataMapper.js"></script>
     <script type="text/javascript" src="StorageManager.js"></script>
+    <script type="text/javascript" src="FBManager.js"></script>
     <script type="text/javascript" src="AccountManager.js"></script>
     <script type="text/javascript" src="DataList.js"></script>
     <script type="text/javascript" src="DataRow.js"></script>
     <script type="text/javascript" src="ActivityRow.js"></script>
     <script type="text/javascript" src="ActivityList.js"></script>
+    <script type="text/javascript" src="HomeActivities.js"></script>
+    <script type="text/javascript" src="ActivityEditor.js"></script>
     <script type="text/javascript" src="Empty.js"></script>
     <script type="text/javascript" src="DetailView.js"></script>
     <script type="text/javascript" src="ImageGallery.js"></script>
@@ -43,7 +50,8 @@
     <script type="text/javascript" src="ImageEditPopup.js"></script>
     <script type="text/javascript" src="Header.js"></script>
     <script type="text/javascript" src="WhoThumb.js"></script>
-    <script type="text/javascript" src="WhoPopup.js"></script>
+    <script type="text/javascript" src="WhoGallery.js"></script>
+    <script type="text/javascript" src="VPModel.js"></script>
     <script type="text/javascript" src="VisualPlanner.js"></script>
     <script type="text/javascript" src="IntroManager.js"></script>
     <script type="text/javascript" src="Uservoice.js"></script>
@@ -54,7 +62,7 @@
     <script type="text/javascript" src="WebsqlDB.js"></script>
     <script type="text/javascript" src="WebsqlBucket.js"></script>
     <script type="text/javascript" src="LoadingScreen.js"></script>
-    <script type="text/javascript" src="ga.js"></script>
+    <script type="text/javascript" src="ScalingContainer.js"></script>
   </head>
   <body>
     <div id="fb-root"></div>
@@ -62,30 +70,19 @@
       var bodyStyle = {
         margin: 0,
         padding: 0,
-        minWidth: 700,
       };
 
       var dispatcher = _.extend({}, Backbone.Events);
-
       ALXUI.styleEl(document.body, bodyStyle);
-
-      mixpanel.track('pageLoad');
-
-
-
+      var container = new App.ScalingContainer(document.body, dispatcher);
+      App.Container = container.innerContainer;
       var loadingScreen = new App.LoadingScreen(document.body, dispatcher);
-      var accountManager = new App.AccountManager(launch, dispatcher);
-
-      function launch(am){
-        var vp = new App.VisualPlanner(document.body, am, dispatcher);
-        vp.load();
-        am.onLogin = function(){};
-      }
-
-
-      var logout = ALXUI.addEl(document.body, 'div', { left: App.css.generateBrowserCalcString('50% - 20px'), top: 10, position: 'absolute', color: '#ddd',
+      var vp = new App.VisualPlanner(App.Container, dispatcher);
+''
+      //HACK LOGOUT FOR DEBUGGING TODO SOMETHING REAL
+      var logout = ALXUI.addEl(App.Container, 'div', { left: App.css.generateBrowserCalcString('50% - 20px'), top: 10, position: 'absolute', color: '#ddd',
           textDecoration: 'underline', zIndex: 10, cursor: 'pointer'});
-      logout.textContent = 'logout';
+      logout.textContent = 'logout (version 29)';
       if(window.location.href.indexOf('staging') === -1){
         ALXUI.hide(logout);
       }

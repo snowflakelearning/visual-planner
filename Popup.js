@@ -1,28 +1,30 @@
 window.App = window.App || {};
 (function(App){
-  var Popup = function(parentNode, dispatcher) {
+  var Popup = function(parentNode, dispatcher, style) {
     if(parentNode){
-      this.initialize(parentNode, dispatcher);
+      this.initialize(parentNode, dispatcher, style);
     }
   };
 
+  var p = Popup.prototype = new App.VPBase();
+  p.baseInitialize = p.initialize;
+
   var p = Popup.prototype;
-  p.initialize = function(parentNode, dispatcher) {
-    this.dispatcher = dispatcher;
-    this.div = this.createShader(parentNode);
-    this.popupDiv = ALXUI.addEl(this.div, 'div', popupStyle);
+  p.initialize = function(parentNode, dispatcher, style) {
+    this.shader = this.createShader(parentNode);
+    this.baseInitialize(this.shader, dispatcher, [popupStyle, style || {}]);
   };
 
   p.show = function() {
-    ALXUI.show(this.div);
+    ALXUI.show(this.shader);
   };
 
   p.hide = function() {
-    ALXUI.hide(this.div);
+    ALXUI.hide(this.shader);
   };
 
   p.setSize = function(w, h){
-    ALXUI.styleEl(this.popupDiv, {
+    this.style({
       width: w,
       height: h,
       marginLeft: -w/2,
@@ -30,10 +32,24 @@ window.App = window.App || {};
     });
   };
 
-  p.addOkay = function(onOkay){
-    this.okay = ALXUI.addEl(this.popupDiv, 'div', okayStyle);
-    this.okay.textContent = 'Okay';
-    App.css.addTouchClickEvent(this.okay, onOkay);
+  p.addOkay = function(onOkay, side){
+    if(this.okay){
+      this.div.removeChild(this.okay);
+    }
+    this.okay = this.addDiv(okayStyle, 'Okay', onOkay);
+    if(side){
+      _moveButtonToSide.apply(this, [this.okay, side]);
+    }
+  };
+
+  p.addCancel = function(side){
+    if(this.cancel){
+      this.div.removeChild(this.cancel);
+    }
+    this.cancel = this.addDiv(okayStyle, 'Cancel', this.hide.bind(this));
+    if(side){
+      _moveButtonToSide.apply(this, [this.cancel, side]);
+    }
   };
 
   p.createShader = function(parentNode){
@@ -42,35 +58,33 @@ window.App = window.App || {};
 
   p.setTitle = function(title) {
     if(!this.title) {
-      this.title = ALXUI.createEl('div', titleStyle);
-      this.popupDiv.appendChild(this.title, this.popupDiv.childNodes[0]);
+      this.title = this.addDiv(titleStyle);
     }
     this.title.textContent = title;
   };
 
-  p.addCloser = function(){
-    this.closer = ALXUI.addEl(this.popupDiv, 'div', closerStyle);
-    this.closer.textContent = 'X';
-    this.closer.addEventListener('click', function(e){
-      e.stopPropagation();
-      this.hide();
-    }.bind(this));
-  };
-
   p.setClickOffHides = function(){
-    this.div.addEventListener('click', function(e) {
-      if(e.target === self.div){
+    App.css.addTouchClickEvent(this.shader, function(e) {
+      if(e.target === this.shader){
         this.hide();
       }
     }.bind(this));
   };
+
+  function _moveButtonToSide(button, side){
+    if(side === "left"){
+      ALXUI.styleEl(button, {left: 15, right: null, margin: 0});
+    } else if(side === "right"){
+      ALXUI.styleEl(button, {right: 15, left: null, margin: 0});
+    }
+  }
 
   var titleStyle = {
     textAlign: 'center',
     fontFamily: 'arial',
     fontSize: '24px',
     fontWeight: 700,
-    margin: 5,
+    margin: 10,
   };
 
   var shaderStyle = {
@@ -95,21 +109,6 @@ window.App = window.App || {};
     marginLeft: '-150',
     marginTop: '-65',
     boxShadow: 'rgba(61, 46, 7, 0.74902) 0px 0px 20px 0px'
-  };
-
-  var closerStyle = {
-    cssFloat: 'right',
-    top: 0,
-    right: 0,
-    height: 20,
-    width: 20,
-    lineHeight: 20,
-    fontSize: 16,
-    backgroundColor: '#999',
-    color: 'white',
-    textAlign: 'center',
-    fontFamily: 'helvetica',
-    cursor: 'pointer',
   };
 
   var okayStyle = {

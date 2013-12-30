@@ -14,18 +14,19 @@ window.App = window.App || {};
   p.popupInitialize = p.initialize;
 
   p.initialize = function(parentNode, dispatcher) {
-    this.popupInitialize(parentNode, dispatcher);
-    ALXUI.styleEl(this.popupDiv, mainStyle);
-    parentNode.removeChild(this.div);
-    parentNode.appendChild(this.popupDiv);
-    this.text = ALXUI.addEl(this.popupDiv, 'div', textStyle);
-    this.next = ALXUI.addEl(this.popupDiv, 'div', nextStyle);
-    App.css.addTouchClickEvent(this.next, _onNextClick.bind(this));
+    this.popupInitialize(parentNode, dispatcher, mainStyle);
+    parentNode.removeChild(this.shader);
+    parentNode.appendChild(this.div);
+    this.text = this.addDiv(textStyle);
+    this.next = this.addDiv(nextStyle, null, _onNextClick.bind(this));
+    App.css.addTouchClickEvent(this.div, function(e){
+      e.stopPropagation();
+    });
   };
 
   p.setPos = function(el, posType, offset) {
+    this.show();
     var shift = offset || {x: 0, y: 0};
-    ALXUI.show(this.popupDiv);
     var split = posType.split(',');
     var elRect = el.getBoundingClientRect();
     var point = {x: elRect[split[0]] || elRect['left'], y: elRect[split[1]] || elRect['right']};
@@ -33,19 +34,19 @@ window.App = window.App || {};
     if(split[1] === 'bottom'){
       shift.y += margin;
     } else {
-      shift.y -= this.popupDiv.offsetHeight + margin;
+      shift.y -= this.div.offsetHeight + margin;
     }
     if(split[0] === 'right'){
       shift.x += margin;
     } else if(split[0] === 'left'){
-      shift.x -= this.popupDiv.offsetWidth + margin;
+      shift.x -= this.div.offsetWidth + margin;
     } else if(split[0] === 'center'){
       shift.x += el.offsetWidth / 2;
-      shift.x -= this.popupDiv.offsetWidth / 2;
+      shift.x -= this.div.offsetWidth / 2;
     }
-    posStyle.left = Math.max(0, Math.min(point.x + shift.x, window.innerWidth - this.popupDiv.offsetWidth));
-    posStyle.top = Math.max(0, Math.min(point.y + shift.y, window.innerHeight - this.popupDiv.offsetHeight));
-    ALXUI.styleEl(this.popupDiv, posStyle);
+    posStyle.left = Math.max(0, Math.min(point.x + shift.x, window.innerWidth - this.div.offsetWidth));
+    posStyle.top = Math.max(0, Math.min(point.y + shift.y, window.innerHeight - this.div.offsetHeight));
+    this.style(posStyle);
   };
 
   p.setText = function(text, last){
@@ -58,8 +59,8 @@ window.App = window.App || {};
   };
 
   p.center = function(){
-    ALXUI.styleEl(this.popupDiv, {left: '50%', top: '50%',
-      marginLeft: -this.popupDiv.offsetWidth / 2, marginTop: -this.popupDiv.offsetHeight / 2});
+    this.style({left: '50%', top: '50%',
+      marginLeft: -this.div.offsetWidth / 2, marginTop: -this.div.offsetHeight / 2});
   };
 
   p.setButtonVis = function(vis){

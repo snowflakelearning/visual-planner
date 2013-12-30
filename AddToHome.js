@@ -19,32 +19,30 @@ window.App = window.App || {};
     this.initialize(parentNode, dispatcher);
   };
 
-  var p = AddToHome.prototype;
+  var p = AddToHome.prototype = new App.VPBase();
+  p.baseInitialize = p.initialize;
   p.initialize = function(parentNode, dispatcher) {
-    this.dispatcher = dispatcher;
-    this.div = ALXUI.addEl(parentNode, 'div', mainStyle);
-    this.header = ALXUI.addEl(this.div, 'div', headerStyle);
-    this.header.textContent = 'Run the Snowflake Planner as a web app and get';
+    this.baseInitialize(parentNode, dispatcher, mainStyle);
+    this.header = this.addDiv(headerStyle, 'Run the Snowflake Planner as a web app and get');
     this.valueList = ALXUI.addEl(this.div, 'ul', valueListStyle);
     for(var i = 0; i < valueProps.length; i++){
       var li = ALXUI.addEl(this.valueList, 'li', itemStyle);
       li.textContent = valueProps[i];
     }
-    this.instructionsContainer = ALXUI.addEl(this.div, 'div', containerStyle);
-    this.instructionsHeader = ALXUI.addEl(this.instructionsContainer, 'div',
-        [subHeaderStyle, {fontWeight: 700, marginTop: 10}]);
-    this.instructionsHeader.textContent = 'To add the Snowflake Planner to your home screen please:';
+    this.instructionsContainer = this.addDiv(containerStyle);
+    this.instructionsHeader = ALXUI.addDivTo(this.instructionsContainer,
+        [subHeaderStyle, {fontWeight: 700, marginTop: 10}],
+        'To add the Snowflake Planner to your home screen please:');
     for(var i = 0; i < instructionData.length; i++){
       var box = new App.IconBullet(this.instructionsContainer, this.dispatcher, instructionData[i]);
       box.setSize(300, 110);
       box.textOnTop();
       ALXUI.styleEl(box.div, {marginLeft: 33, marginTop: 15});
     }
-    this.noThanks = ALXUI.addEl(this.div, 'div', noThanksStyle);
-    this.noThanks.textContent = 'No thanks, I\'ll use the planner in Safari';
-    App.css.addTouchClickEvent(this.noThanks, function(){
-      this.dispatcher.trigger('addToHomeNoThanks');
-    }.bind(this));
+    this.noThanks = this.addDiv(noThanksStyle, 'No thanks, I\'ll use the planner in Safari',
+        function(){
+          this.dispatcher.trigger('addToHomeNoThanks');
+        });
   };
 
   var itemStyle = {
@@ -52,8 +50,6 @@ window.App = window.App || {};
   };
 
   var mainStyle = {
-    fontFamily: App.MAIN_FONT,
-    width: '100%',
     top: 235,
     bottom: 0,
     width: '100%',

@@ -7,17 +7,19 @@ window.App = window.App || {};
     this.initialize(parentNode, dispatcher, bulletData);
   };
 
-  var p = IconBullet.prototype;
+  var p = IconBullet.prototype = new App.VPBase();
+  p.baseInitialize = p.initialize;
+
   p.initialize = function(parentNode, dispatcher, bulletData) {
-    this.div = ALXUI.addEl(parentNode, 'div', boxStyle);
-    this.icon = ALXUI.addEl(this.div, 'div', iconStyle);
+    this.baseInitialize(parentNode, dispatcher, boxStyle);
+    this.icon = this.addDiv(iconStyle);
     ALXUI.setBackgroundImage(this.icon, bulletData.icon);
-    this.text = ALXUI.addEl(this.div, 'div', bulletStyle);
+    this.text = this.addDiv(bulletStyle);
     this.text.innerHTML = bulletData.text;
   };
 
   p.setSize = function(w, h){
-    ALXUI.styleEl(this.div, {width: w, height: h});
+    this.style({width: w, height: h});
   };
 
   p.textOnTop = function(){

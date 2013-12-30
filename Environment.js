@@ -17,4 +17,6 @@ window.App = window.App || {};
 
   App.ARN = useProdAppId ? 'arn:aws:iam::756088659563:role/VisualPannerProd' :
       'arn:aws:iam::756088659563:role/testJsSDK';
+
+  App.OFFLINE_ENABLED = useProdAppId;
 }());

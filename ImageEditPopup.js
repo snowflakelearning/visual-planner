@@ -15,16 +15,21 @@ window.App = window.App || {};
 
   p.initialize = function(parentNode, dispatcher) {
     this.popupInitialize(parentNode, dispatcher);
-    ALXUI.styleEl(this.popupDiv, sizeStyle);
+    this.style(sizeStyle);
     this.setTitle('Name this image');
-    this.thumb = ALXUI.addEl(this.popupDiv, 'div', thumbStyle);
-    this.textInput = ALXUI.addEl(this.popupDiv, 'input', taStyle);
+    this.thumb = this.addDiv(thumbStyle);
+    this.textInput = ALXUI.addEl(this.div, 'input', taStyle);
     this.textInput.type = 'text';
     this.addOkay(_onOkay.bind(this));
     this.textInput.addEventListener('keydown', function(e){
       if(e.keyCode === 13){
         _onOkay.apply(this);
       }
+    }.bind(this));
+    this.textInput.addEventListener('touchstart', function(){
+       if(window.navigator.standalone){
+         this.textInput.focus();
+       }
     }.bind(this));
   };
 
@@ -35,26 +40,10 @@ window.App = window.App || {};
     this.data = box.data;
     this.editing = box;
     this.textInput.value = box.data.text;
-    console.log(box.data.text);
-
-    var once = function once(e){
-      this.textInput.value = '';
-      ALXUI.styleEl(this.textInput, {color: 'black'});
-      this.textInput.removeEventListener('touchstart', once);
-      this.textInput.removeEventListener('click', once);
-      setTimeout(function(){
-        this.textInput.focus();
-      }.bind(this));
-    }
 
     if(!box.data.text){
       this.textInput.value = instructionText;
-      ALXUI.styleEl(this.textInput, {color: '#aaa'});
-      if(!App.css.osIsIOS() && !App.css.osIsAndroid()){
-        this.textInput.addEventListener('click', once.bind(this));
-      } else {
-        this.textInput.addEventListener('touchstart', once.bind(this));
-      }
+      ALXUI.setGreyInstructionStyle(this.textInput);
     } else {
       this.textInput.focus();
       this.textInput.select();
@@ -76,9 +65,6 @@ window.App = window.App || {};
     this.data.text = this.textInput.value;
     this.dispatcher.trigger('imageUpdate', this.editing, this.data);
     this.textInput.blur();
-    setTimeout(function(){
-      window.dispatchEvent(new Event('resize'));
-    }, 200);
   }
 
   var sizeStyle = {

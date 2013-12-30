@@ -4,21 +4,23 @@
 window.App = window.App || {};
 (function(App){
 
-  var WhoThumb = function(parentNode, dispatcher) {
-    this.initialize(parentNode, dispatcher);
+  var WhoThumb = function(parentNode, dispatcher, data) {
+    this.initialize(parentNode, dispatcher, data);
   };
 
-  var p = WhoThumb.prototype;
-  p.initialize = function(parentNode, dispatcher) {
-    this.dispatcher = dispatcher;
-    this.div = ALXUI.addEl(parentNode, 'div', mainStyle);
-    this.thumb = ALXUI.addEl(this.div, 'div', thumbStyle);
-    this.whoText = ALXUI.addEl(this.div, 'div', textStyle);
+  var p = WhoThumb.prototype = new App.DataRow();
+  p.dataRowInitialize = p.initialize;
+
+  p.initialize = function(parentNode, dispatcher, data) {
+    this.dataRowInitialize(parentNode, dispatcher, data, mainStyle);
+    this.thumb = this.addDiv(thumbStyle);
+    this.whoText = this.addDiv(textStyle);
   };
 
-  p.setAppearance = function(img, text){
-    ALXUI.setBackgroundImage(this.thumb, img);
-    this.whoText.textContent = text;
+  p.dataRowUpdate = p.update;
+  p.update = function(data){
+    ALXUI.setBackgroundImage(this.thumb, data.dataURI || data.url);
+    this.whoText.textContent = data.text || 'No Name';
   };
 
   var mainStyle = {
@@ -41,7 +43,7 @@ window.App = window.App || {};
   var textStyle = {
     width: 100,
     height: 19,
-    fontSize: 12,
+    fontSize: 11,
     lineHeight: 19,
     backgroundColor: '#f0f0f0',
   };

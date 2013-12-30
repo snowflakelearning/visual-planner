@@ -1,69 +1,66 @@
 var App = App || {};
 (function(App) {
 
-  var SAVE_CHUNK_TIME = 1000;
-
   App.BLANK_IMAGE_URL = 'images/help-browser.svg';
   App.BLANK_IMAGE_TAG = 'BLANK';
+  App.BLANK_ACTIVITY_NAME = "Something fun!";
+  App.BLANK_ACTIVITY_WHEN = "Someday";
+  App.BLANK_STEP_NAME = "The First Step";
 
   var blankActivity = {
     "id": 0,
     "parentId": null,
-    "name": "Something fun!",
-    "when": "Someday",
+    "name": App.BLANK_ACTIVITY_NAME,
+    "when": App.BLANK_ACTIVITY_WHEN,
     "who": [],
     "where": App.BLANK_IMAGE_TAG,
     "icon": App.BLANK_IMAGE_TAG
   };
 
-  var VisualPlanner = function(div, am, dispatcher) {
-    this.initialize(div, am, dispatcher);
+  var VisualPlanner = function(parentNode, dispatcher) {
+    this.initialize(parentNode, dispatcher);
   };
+
+  var p = VisualPlanner.prototype = new App.VPBase();
+  p.baseInitialize = p.initialize;
 
   var p = VisualPlanner.prototype;
-  p.initialize = function(div, am, dispatcher){
-    this.am = am;
-    this.div = ALXUI.addEl(div, 'div', containerStyle);
-    this.dispatcher = dispatcher;
+  p.initialize = function(parentNode, dispatcher){
+    this.baseInitialize(parentNode, dispatcher, containerStyle);
+    this.model = new App.VPModel(dispatcher);
+    this.hide();
+    _registerEvents.apply(this);
     this.header = new App.Header(this.div, this.dispatcher);
-    this.content = ALXUI.addEl(this.div, 'div');
-    this.list = new App.ActivityList(this.content, this.dispatcher);
+    this.content = this.addDiv();
+    this.homeList = new App.HomeActivities(this.content, this.dispatcher);
     this.detailView = new App.DetailView(this.content, this.dispatcher);
-    this.dispatcher.bind('activityEdit', _editActivity, this);
-    this.dispatcher.bind('showImagePopup', _showImagePopup, this);
-    this.imageSelectPopup = new App.ImageGallery(document.body, _.extend({}, Backbone.Events), am);
+    this.activityEditor = new App.ActivityEditor(this.content, this.dispatcher);
+    this.imageSelectPopup = new App.ImageGallery(document.body, this.dispatcher);
     this.imageSelectPopup.toPopupMode();
-    this.dispatcher.bind('showActivityDetail', _showDetailView, this);
-    this.dispatcher.bind('exitDetailView', _hideDetailView, this);
-    this.dispatcher.bind('editMode', _toEditMode, this);
-    this.dispatcher.bind('addActivity', _addActivity, this);
-    this.dispatcher.bind('deleteActivity', _deleteActivity, this);
-    this.dispatcher.bind('shiftStep', _shiftStep, this);
-    this.activityData = {};
-    App.css.fixWidth(this.content, App.BOX_WIDTH);
     this.firstRun = true;
-    this.dispatcher.trigger('editMode', true);
-    ALXUI.hide(this.list.div);
-    this.dispatcher.bind('showIntro', _showIntro, this);
+    this.homeList.hide();
+    this.detailView.hide();
+    this.activityEditor.hide();
     App.IntroManager.initialize(this.dispatcher);
+    this.am = new App.AccountManager(dispatcher);
+    this.ipadEditWarningShown = false;
   };
 
-  p.load = function(){
-    this.am.getUserImages(this.fetchData.bind(this), err.bind(this));
-  };
-
-  p.openData = function(activityJson) {
-    this.activityData = activityJson;
-    if(this.firstRun && activityJson.length === 0){
-      this.dispatcher.trigger('addActivity', null);
-      if(this.am.newUser){
+  p.openData = function() {
+    if(!this.model.initialized){
+      return;
+    }
+    this.show();
+    this.dispatcher.trigger('loadingComplete');
+    var activityJson = this.model.getActivityData();
+    if(this.firstRun && activityJson.length == 0){
+      this.dispatcher.trigger('addActivity', null, true);
+      if(this.am.storageManager.newUser){
         this.dispatcher.trigger('showIntro', 'NewUser');
       }
     } else {
-      this.list.update(this.activityData);
-      this.dispatcher.trigger('editMode', false);
       if(this.firstRun){
-        ALXUI.show(this.list.div);
+        _showHome.apply(this);
         this.firstRun = false;
       }
     }
@@ -71,42 +68,51 @@ var App = App || {};
   };
 
   p.saveData = function(data){
-    if(data){
-      this.activityData = data;
-      this.list.update(this.activityData);
-    }
-    clearTimeout(this.saveTO);
-    this.saveTO = setTimeout(function(){
-      this.am.pushActivityData(this.activityData);
-    }.bind(this), SAVE_CHUNK_TIME);
+    this.model.setActivityData(data);
+    this.dispatcher.trigger('saveData', this.model);
   };
 
-  p.fetchData = function(){
-    this.am.fetchActivityData(this.openData.bind(this), _noData.bind(this));
-  };
+  function _registerEvents(){
+    this.dispatcher.bind('activityEdit', _editActivity, this);
+    this.dispatcher.bind('showImagePopup', _showImagePopup, this);
+    this.dispatcher.bind('showActivityDetail', _showDetailView, this);
+    this.dispatcher.bind('addActivity', _addActivity, this);
+    this.dispatcher.bind('deleteActivity', _deleteActivity, this);
+    this.dispatcher.bind('shiftStep', _shiftStep, this);
+    this.dispatcher.bind('showIntro', _showIntro, this);
+    this.dispatcher.bind('backToHome', _showHome, this);
+    this.dispatcher.bind('showEditor', _showEditView, this);
+    this.dispatcher.bind('modelChange', _onModelChange, this);
+  }
+
+  function _onModelChange(){
+    this.openData(this.model.getActivityData());
+  }
+
+  function _showHome(){
+    this.activityEditor.hide();
+    this.detailView.hide();
+    this.homeList.show();
+    this.viewing = "home";
+  }
 
   function _showIntro(introName){
+    var data = this.model.getActivityData();
     if(introName){
       App.IntroManager.playIntro(introName, this);
     } else {
-      if(this.editMode){
+      if(this.viewing === "editor"){
         App.IntroManager.playIntro('Edit', this);
+      } else if(this.viewing === "details"){
+        App.IntroManager.playIntro('Detail', this);
       } else {
-        if(this.detailMode){
-          App.IntroManager.playIntro('Detail', this);
-        } else {
-          App.IntroManager.playIntro('ActivityList', this);
-        }
+        App.IntroManager.playIntro('ActivityList', this);
       }
     }
   }
 
-  function _noData(){
-    this.openData([]);
-  }
-
   function _shiftStep(up, id, parentId){
-    var activityData = this.list.getActivityData();
+    var activityData = this.model.getActivityData();
     var clickedRow = _.find(activityData, function(r){
       return r.id === id && r.parentId === parentId;
     });
@@ -137,24 +143,28 @@ var App = App || {};
     this.saveData(activityData);
   }
 
-  function err(err){
-    console.log(err);
-    alert('Unable to load account data, please check your internet connection.');
-  }
-
   function _deleteActivity(data){
-    var activityData = this.list.getActivityData();
-    var match;
-    activityData = _.reject(activityData, function(a){
-      return (a.id === data.id && a.parentId == data.parentId) ||
-          (a.parentId === data.id && data.parentId === null);
-    });
+    var activityData = this.model.getActivityData();
+    var filter = _.filter(activityData, function(s){
+      return s.parentId === data.parentId
+    })
+    if(data.parentId !== null && filter.length === 1){
+      var find = filter[0];
+      find.name = blankActivity.name;
+      find.where = blankActivity.where;
+      find.who = blankActivity.who;
+      find.when = blankActivity.when;
+    } else {
+      activityData = _.reject(activityData, function(a){
+        return (a.id === data.id && a.parentId == data.parentId) ||
+            (a.parentId === data.id && data.parentId === null);
+      });
+    }
     this.saveData(activityData);
   }
 
-  function _addActivity(parentId){
-    this.dispatcher.trigger('editMode', true);
-    var activityData = this.list.getActivityData();
+  function _addActivity(parentId, silent){
+    var activityData = this.model.getActivityData();
     var newActivity = _createBlankActivityJson.apply(this, [activityData, parentId]);
     activityData.push(newActivity);
     if(newActivity.parentId === null){
@@ -162,6 +172,9 @@ var App = App || {};
       activityData.push(newStep);
     }
     this.saveData(activityData);
+    if(newActivity.parentId === null && !silent){
+      this.dispatcher.trigger('showEditor', newActivity);
+    }
   }
 
   function _createBlankActivityJson(activityData, parentId){
@@ -176,68 +189,65 @@ var App = App || {};
     newActivity.parentId = parentId;
     if(parentId !== null){
       delete newActivity.icon;
-      newActivity.name = 'An important step';
+      newActivity.name = App.BLANK_STEP_NAME;
     }
     return newActivity;
   }
 
   function _showDetailView(data){
-    this.detailMode = true;
-    var activityData = this.list.getActivityData();
-    var rowData = _.filter(activityData, function(r){
-      return r.parentId === data.id;
-    });
-    this.detailView.show(rowData, data.name);
-    ALXUI.hide(this.list.div);
+    this.detailView.show(data, this.model.getActivityData());
+    this.homeList.hide();
+    this.viewing = 'details';
   }
 
-  function _hideDetailView(){
-    this.detailMode = false;
-    this.detailView.hide();
-    ALXUI.show(this.list.div);
+  function _showEditView(data){
+    if(window.navigator.onLine){
+      var ask = true;
+      if(App.css.osIsIOS() && !this.ipadEditWarningShown){
+        ask = confirm("The activity editor is not currently optimized for mobile devices so it may be a bit hard to use " +
+            "on your phone or table.  For the best experience we recommend editing on your laptop or desktop.  Do you " +
+            "want to try editing on your mobile device anyways?");
+        this.ipadEditWarningShown = true;
+      }
+      if(ask){
+        this.activityEditor.show(data, this.model.getActivityData());
+        this.detailView.hide();
+        this.homeList.hide();
+        this.viewing = 'editor';
+      }
+    } else {
+      alert('Editing is disabled while you are offline.  If you would like us to add offline editing please ' +
+          'let us know by emailing us at snowflake@alxgroup.net.');
+    }
   }
 
-  function _toEditMode(on){
-    this.editMode = on;
-    _hideDetailView.apply(this);
-  }
-
-  function _showImagePopup(row, attribute, e){
+  function _showImagePopup(row, attribute, e, title){
     mixpanel.track('showImagePopup', {action: attribute + 'Edit'});
     this.imageSelectPopup.show(e, function(data){
       mixpanel.track('activityEdit', {action: attribute + 'Edit'});
       row.data[attribute] = data;
       _editActivity.apply(this, [row.data]);
-    }.bind(this), attribute === 'who', row.data[attribute]);
+    }.bind(this), attribute === 'who', row.data[attribute], title);
   }
 
   function _editActivity(rowData){
-    clearTimeout(this.editTo);
-    this.editTo = setTimeout(function(){
-      var activityData = this.list.getActivityData();
-      var row = _.find(activityData, function(r){
-            return r.id === rowData.id && r.parentId === rowData.parentId;
-      });
-      for(var x in row){
-        row[x] = rowData[x];
-      }
-      this.saveData(activityData);
-    }.bind(this), 1000);
+    var activityData = this.model.getActivityData();
+    var row = _.find(activityData, function(r){
+      return r.id === rowData.id && r.parentId === rowData.parentId;
+    });
+    for(var x in row){
+      row[x] = rowData[x];
+    }
+    this.saveData(activityData);
   }
 
   var containerStyle = {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-    overflow: 'auto',
     backgroundColor: 'white',
     userSelect: 'none',
     mozUserSelect: 'none',
     webkitUserSelect: 'none',
     msUserSelect: 'none',
-    position: 'absolute',
-    overflowX: 'hidden',
-    minWidth: 768,
+    width: App.BOX_WIDTH,
   };
 
   App.VisualPlanner = VisualPlanner;

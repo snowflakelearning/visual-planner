@@ -10,9 +10,11 @@ window.App = window.App || {};
     this.initialize();
   };
 
-  var p = CanvasShader.prototype;
+  var p = CanvasShader.prototype = new App.VPBase();
+  p.baseInitialize = p.initialize;
+
   p.initialize = function() {
-    this.div = ALXUI.addEl(document.body, 'div', mainStyle);
+    this.baseInitialize(document.body, null, mainStyle);
     this.canvas = ALXUI.addEl(this.div, 'canvas', canvasStyle);
     this.canvas.width = App.css.osIsIOS() ? 2048 : 3000;
     this.canvas.height = this.canvas.width;
@@ -20,11 +22,12 @@ window.App = window.App || {};
   };
 
   p.shadeEl = function(el, clickthrough, hideOnClickthrough){
-    ALXUI.show(this.div);
+    this.show();
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.context.fillStyle = 'rgba(0, 0, 0, 0.7)';
     this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
     if(el){
+      el.scrollIntoView(false);
       var elRect = el.getBoundingClientRect();
       this.context.clearRect(elRect.left - SHADER_MARGIN, elRect.top - SHADER_MARGIN,
           elRect.right -elRect.left + 2 * SHADER_MARGIN,
@@ -32,27 +35,23 @@ window.App = window.App || {};
       if(clickthrough){
         this.div.onclick = function(e){
           var wasVis = this.div.style.display !== 'none';
-          ALXUI.hide(this.div);
+          this.hide();
           var clickEl = document.elementFromPoint(e.clientX, e.clientY);
           if(el === clickEl){
             el.click(e);
             if(hideOnClickthrough){
-              ALXUI.hide(this.div);
+              this.hide();
               return;
             }
           }
           if(wasVis){
-            ALXUI.show(this.div);
+            this.show();
           }
         }.bind(this);
       } else {
         this.div.onclick = null;
       }
     }
-  };
-
-  p.hide = function(){
-    ALXUI.hide(this.div);
   };
 
   var mainStyle = {

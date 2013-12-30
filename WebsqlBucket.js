@@ -28,8 +28,10 @@ window.App = window.App || {};
         callback(err);
       } else {
         var result = {Body:{}};
-        for(var i = 0; i < data.Item[attr].S.length; i++){
-          result.Body[i] = data.Item[attr].S.charCodeAt(i);
+        if(data){
+          for(var i = 0; i < data.Item[attr].S.length; i++){
+            result.Body[i] = data.Item[attr].S.charCodeAt(i);
+          }
         }
         callback(null, result);
       }

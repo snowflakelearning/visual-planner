@@ -171,18 +171,29 @@ window.App = window.App || {};
     var func = function(e){
       callback.apply(context, [e]);
     };
-    //el.addEventListener('touchstart', func);  //TODO implement non laggy touch events
-    el.addEventListener('click', func)
+
+    var eventType = App.css.osIsIOS() ? 'touchstart' : 'click';
+    el.addEventListener(eventType, func);
+    el.alxuiTouchClickListener = func;
   };
 
-  App.css.fixWidth = function(div, targetPxWidth){
+  App.css.removeTouchClickEvent = function(el){
+    if(el.alxuiTouchClickListener){
+      var eventType = App.css.osIsIOS() ? 'touchstart' : 'click';
+      el.removeEventListener(eventType, el.alxuiTouchClickListener);
+    }
+  };
+
+  App.css.fixWidth = function(div, targetPxWidth, scrollContainer){
     var resizeTO;
-    clearTimeout(resizeTO);
     var resize = function(){
-      var scale = window.innerWidth / targetPxWidth;
+      var scale = document.body.offsetWidth / targetPxWidth;
+      ALXUI.styleEl(div, {width: targetPxWidth / scale});
+      ALXUI.styleEl(scrollContainer, {height: window.innerHeight / scale});
       App.css.setScaleTransform(div, scale, scale, 'left top');
     };
     window.addEventListener('resize', function(){
+      clearTimeout(resizeTO);
       resizeTO = setTimeout(resize, 100);
     });
     resize();

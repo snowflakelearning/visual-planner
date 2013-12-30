@@ -11,13 +11,13 @@ window.App = window.App || {};
       this.initialize(parentNode, dispatcher);
     }
   };
+  var p = DataList.prototype = new App.VPBase();
+  p.baseInitialize = p.initialize;
 
-  var p = DataList.prototype;
   p.initialize = function(parentNode, dispatcher) {
-    this.div = ALXUI.addEl(parentNode, 'div');
-    this.header = ALXUI.addEl(this.div, 'div', headerStyle);
-    this.listContainer = ALXUI.addEl(this.div, 'div', listStyle);
-    this.dispatcher = dispatcher;
+    this.baseInitialize(parentNode, dispatcher);
+    this.header = this.addDiv(headerStyle);
+    this.listContainer = this.addDiv(listStyle);
     this.dataRows = [];
   };
 
@@ -38,6 +38,7 @@ window.App = window.App || {};
   };
 
   p.update = function(data, idField, stripe){
+    this.data = data;
     _addRows.apply(this, [data, idField]);
     _removeRows.apply(this, [data, idField]);
     for(var i = 0; i < data.length; i++){
@@ -73,7 +74,6 @@ window.App = window.App || {};
 
   var headerStyle = {
     fontSize: HEADER_FONT_SIZE,
-    fontFamily: App.MAIN_FONT,
     color: App.DARK_BLUE,
     textAlign: 'center',
     fontWeight: 700,

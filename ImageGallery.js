@@ -7,55 +7,54 @@ window.App = window.App || {};
   var s3Prefix = 'https://s3.amazonaws.com/snowflakelearning.com/';
   var MAX_IM_SIZE = 256;
 
-  var ImageGallery = function(parentNode, dispatcher, accountManager) {
-    this.initialize(parentNode, dispatcher, accountManager);
+  var ImageGallery = function(parentNode, dispatcher) {
+    this.initialize(parentNode, dispatcher);
   };
 
   var p = ImageGallery.prototype = new App.DataList();
   p.dataListInitialize = p.initialize;
 
-  p.initialize = function(parentNode, dispatcher, accountManager) {
+  p.initialize = function(parentNode, dispatcher) {
     this.dataListInitialize(parentNode, dispatcher);
-    this.accountManager = accountManager;
-    ALXUI.styleEl(this.div, mainStyle);
+    ALXUI.styleEl(this.header, headerStyle);
+    this.style(mainStyle);
     ALXUI.styleEl(this.listContainer, containerStyle);
+    ALXUI.addTouchScrolling(this.listContainer, this.div);
     this.header.textContent = 'Image Gallery';
     this.dispatcher.bind('upload', _handleUpload.bind(this));
     this.dispatcher.bind('delete', _handleDelete.bind(this));
     this.dispatcher.bind('imageEdit', _handleEdit.bind(this));
     this.dispatcher.bind('imageUpdate', _handleImageUpdate.bind(this));
     this.dispatcher.bind('imageClick', _handleImageClick.bind(this));
-    this.accountManager.addUpdateListener(this.update.bind(this));
+    this.dispatcher.bind('imageDataLoad', this.update, this);
     this.imageEditPopup = new App.ImageEditPopup(document.body, this.dispatcher);
     _addBlank.apply(this);
   };
 
   p.toPopupMode = function(){
     p.hide = App.Popup.prototype.hide;
-    this.popupDiv = this.div;
-    this.div = App.Popup.prototype.createShader.call(this, this.popupDiv.parentNode);
-    this.popupDiv.parentNode.appendChild(this.div);
-    this.div.appendChild(this.popupDiv);
-    ALXUI.styleEl(this.popupDiv, popupStyle);
-    this.popupMode = true;
+    this.shader = App.Popup.prototype.createShader.call(this, this.div.parentNode);
+    App.Popup.prototype.setClickOffHides.call(this)
+    this.div.parentNode.appendChild(this.shader);
+    this.shader.appendChild(this.div);
+    this.style(popupStyle);
     App.Popup.prototype.addOkay.call(this, _onMultiSelect.bind(this));
-    ALXUI.styleEl(this.imageEditPopup.div, {backgroundColor:'transparent'});
-    document.body.appendChild(this.imageEditPopup.div);
+    ALXUI.styleEl(this.imageEditPopup.shader, {backgroundColor:'transparent'});
+    document.body.appendChild(this.imageEditPopup.shader);
   };
 
   p.popupShow = App.Popup.prototype.show;
-  p.show = function(evt, onSelect, multiSelect, currentVals){
+  p.show = function(evt, onSelect, multiSelect, currentVals, title){
     this.popupShow();
     this.multiSelect = multiSelect;
     this.onSelect = onSelect;
     this.selected = currentVals;
     _selectThumbs.apply(this, [currentVals]);
+    this.header.textContent = title;
     if(multiSelect){
-      this.header.textContent = 'Select Images';
       ALXUI.styleEl(this.listContainer, {bottom: 60});
       ALXUI.show(this.okay);
     } else {
-      this.header.textContent = 'Select An Image';
       ALXUI.styleEl(this.listContainer, {bottom: 0});
       ALXUI.hide(this.okay);
     }
@@ -73,16 +72,13 @@ window.App = window.App || {};
   };
 
   p.createRow = function(data){
-    var thumb = new App.GalleryThumb(this.listContainer, this.dispatcher);
-    if(data){
-      thumb.setAppearance(data);
-    }
+    var thumb = new App.GalleryThumb(this.listContainer, this.dispatcher, data);
     return thumb;
   };
 
   p.dataListUpdate = p.update;
-  p.update = function(userData){
-    this.dataListUpdate(userData.imageData, 'url');
+  p.update = function(imData){
+    this.dataListUpdate(imData, 'url');
   };
 
   function _onMultiSelect(){
@@ -123,20 +119,20 @@ window.App = window.App || {};
   }
 
   function _handleImageUpdate(box, data){
-    box.setAppearance(data);
+    box.update(data);
     this.imageEditPopup.hide();
-    this.accountManager.updateImageText(data);
+    this.dispatcher.trigger('updateImageText', data);
     mixpanel.track('imageNameSet');
   }
 
   function _handleDelete(box){
     ALXUI.hide(box.div);
-    this.accountManager.deleteImage(box.data);
+    this.dispatcher.trigger('deleteImage', box.data);
     mixpanel.track('imageDeleted');
   }
 
   function _handleUpload(box, fileData){
-    var objKey = 'user-images/' + this.accountManager.userID + '/' + (new Date).getTime();
+    var objKey = 'user-images/' + App.getUserID() + '/' + (new Date).getTime();
     var fr = new FileReader();
     fr.onload = function(evt){
       _shrinkAndUpload.apply(this, [evt.target.result, objKey]);
@@ -166,7 +162,7 @@ window.App = window.App || {};
       canv.getContext('2d').drawImage(im, 0, 0, canv.width, canv.height);
       var type = uri.split('data:')[1].split(';')[0]
       ALXUI.canvasToBlob(canv, function(fileData, type){
-        this.accountManager.pushImageToS3(fileData, type, objKey);
+        this.dispatcher.trigger('newImageUpload', fileData, type, objKey, {url: s3Prefix + objKey, lastModified: Date.now()});
       }.bind(this), type);
 
     }.bind(this))
@@ -206,6 +202,16 @@ window.App = window.App || {};
     backgroundColor: '#fafafa',
     color: '#07163d',
     boxShadow: 'rgba(61, 46, 7, 0.74902) 0px 0px 20px 0px'
+  };
+
+  var headerStyle = {
+    width: '90%',
+    height: 70,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    marginLeft: '5%',
+    marginRight: '5%',
   };
 
   App.ImageGallery = ImageGallery;

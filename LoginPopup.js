@@ -19,9 +19,8 @@ window.App = window.App || {};
   p.popupInitialize = p.initialize;
 
   p.initialize = function(dispatcher) {
-    this.popupInitialize(document.body, dispatcher);
-    ALXUI.styleEl(this.popupDiv, {position: 'absolute', overflow: 'hidden'});
-    ALXUI.styleEl(this.div, shaderStyle);
+    this.popupInitialize(document.body, dispatcher, {position: 'absolute', overflow: 'hidden'});
+    ALXUI.styleEl(this.shader, shaderStyle);
     this.setSize(700, 620);
     _setupBanner.apply(this);
     _setupStartContent.apply(this);
@@ -32,16 +31,16 @@ window.App = window.App || {};
       this.blurred = false;
     }.bind(this));
     this.dispatcher.bind('addToHomeNoThanks', _onNoThanks, this);
-  };
-
-  p.showAuthorizing = function(){
-    //TODO
+    this.dispatcher.bind('FBAPILoad', _addFBButton, this);
+    this.dispatcher.bind('FBNotAuthorized', this.show, this);
+    this.dispatcher.bind('FBUnknown', this.show, this);
+    this.dispatcher.bind('FBLogin', this.hide, this);
   };
 
   p.overrideFBButton = function(){
     //When running as a web app we need to override what the FB login button does per
     //http://stackoverflow.com/questions/11197668/fb-login-broken-flow-for-ios-webapp
-    this.override = ALXUI.addEl(this.startContent, 'div', [fbStyle, {width: 130, height: 40, opacity: 0, zIndex:2}]);
+    this.override = ALXUI.addDivTo(this.startContent, [fbStyle, {width: 130, height: 40, opacity: 0, zIndex:2}]);
     this.override.addEventListener('touchstart', function(e){
       e.preventDefault();
       e.stopPropagation();
@@ -54,7 +53,7 @@ window.App = window.App || {};
   p.addBannerSnowflakes = function(){
     this.bannerSnowflakes = [];
     for(var i = 1; i <= NUM_SNOWFLAKES; i++){
-      var sf = ALXUI.addEl(this.banner, 'div', bannerSnowflakeStyle);
+      var sf = ALXUI.addDivTo(this.banner, bannerSnowflakeStyle);
       ALXUI.setBackgroundImage(sf, SF_PREFIX + i + '.svg');
       this.bannerSnowflakes.push(sf);
       App.css.addTransitionStyle(['all'], sf, SPIN_TIME);
@@ -65,36 +64,28 @@ window.App = window.App || {};
   };
 
   function _setupBanner(){
-    this.banner = ALXUI.addEl(this.popupDiv, 'div', bannerStyle);
+    this.banner = this.addDiv(bannerStyle);
     this.setTitle('Snowflake Learning');
     ALXUI.styleEl(this.title, titleStyle);
     this.banner.appendChild(this.title);
-    this.subTitle = ALXUI.addEl(this.banner, 'div', subtitleStyle);
-    this.subTitle.textContent = 'Personalized Educational Apps as Unique as Your Child';
+    this.subTitle = ALXUI.addDivTo(this.banner, subtitleStyle,
+        'Personalized Educational Apps as Unique as Your Child');
     this.addBannerSnowflakes();
   }
 
   function _setupStartContent(){
-    this.startContent = ALXUI.addEl(this.popupDiv, 'div', contentStyle);
+    this.startContent = this.addDiv(contentStyle);
     App.css.addTransitionStyle(['margin-left'], this.startContent, 1);
-    this.intro = ALXUI.addEl(this.startContent, 'div', introStyle);
-    this.intro.textContent = 'Welcome to the Snowflake Visual Planner Beta!';
-    this.startButton = ALXUI.addEl(this.startContent, 'div', startStyle);
-    this.startButton.textContent = 'Start Planning';
-    this.fbLoginButton = document.getElementById('fblogin');
-    ALXUI.styleEl(this.fbLoginButton, [fbStyle, {display: 'block', zIndex: -1}]);
-    this.startContent.appendChild(this.fbLoginButton);
+    this.intro = ALXUI.addDivTo(this.startContent, introStyle, 'Welcome to the Snowflake Visual Planner Beta!');
+    this.startButton = ALXUI.addDivTo(this.startContent, startStyle, 'Start Planning', function(){
+      mixpanel.track('startPlanningClicked');
+      _showHomeScreenInfo.apply(this);
+    }.bind(this));
     if(window.navigator.standalone || !App.css.osIsIOS()){
       ALXUI.hide(this.startButton);
-      ALXUI.styleEl(this.fbLoginButton, {zIndex: 1});
-    } else {
-      App.css.addTouchClickEvent(this.startButton, function(){
-        mixpanel.track('startPlanningClicked');
-        _showHomeScreenInfo.apply(this);
-      }.bind(this));
     }
-    this.bottomContainer = ALXUI.addEl(this.startContent, 'div', bottomContainerStyle);
-    this.subIntro = ALXUI.addEl(this.bottomContainer, 'div', subintroStyle);
+    this.bottomContainer = ALXUI.addDivTo(this.startContent, bottomContainerStyle);
+    this.subIntro = ALXUI.addDivTo(this.bottomContainer, subintroStyle);
     this.subIntro.innerHTML = 'The Snowflake Planner lets you create customized visual activity plans in minutes.<br/>' +
         'Your activities are hosted in the cloud, and are accessible from any computer or tablet.';
     for(var i = 0; i < 3; i++){
@@ -102,8 +93,20 @@ window.App = window.App || {};
     }
   }
 
+  function _addFBButton(fbButton){
+    this.fbLoginButton = fbButton;
+    ALXUI.styleEl(this.fbLoginButton, [fbStyle, {display: 'block', zIndex: -1}]);
+    this.startContent.appendChild(this.fbLoginButton);
+    if(window.navigator.standalone || !App.css.osIsIOS()){
+      ALXUI.styleEl(this.fbLoginButton, {zIndex: 1});
+    }
+    if(window.navigator.standalone){
+      this.overrideFBButton();
+    }
+  }
+
   function _showHomeScreenInfo(){
-    this.addToHome = new App.AddToHome(this.popupDiv, this.dispatcher);
+    this.addToHome = new App.AddToHome(this.div, this.dispatcher);
     ALXUI.styleEl(this.addToHome.div, {marginLeft: 700});
     App.css.addTransitionStyle(['margin-left'], this.addToHome.div, 1);
     ALXUI.styleEl(this.startContent, {marginLeft: -700});
@@ -235,7 +238,7 @@ window.App = window.App || {};
 
   var shaderStyle = {
     position: 'absolute',
-    minHeight: 620,
+    //minHeight: 620,
     backgroundImage: App.css.generateBrowserSpecificGradient('#888', '#333', 'radial', '50%', '50%'),
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
   };

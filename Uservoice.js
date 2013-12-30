@@ -40,7 +40,7 @@ window.App = window.App || {};
     }]);
 
 // Add default trigger to the bottom-right corner of the window:
-    UserVoice.push(['addTrigger', { mode: 'contact', trigger_position: 'bottom-right' }]);
+    UserVoice.push(['addTrigger', { mode: 'smartvote', trigger_position: 'bottom-right', position: 'left' }]);
 
 // Or, use your own custom trigger:
 //UserVoice.push(['addTrigger', '#id', { mode: 'contact' }]);

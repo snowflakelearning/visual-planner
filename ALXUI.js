@@ -55,10 +55,14 @@ window.ALXUI = window.ALXUI || {};
   };
 
   ui.show = function(node){
+    if(node.style.display !== 'none'){
+      node.alxuiLastVis = node.style.display;
+    }
     if(node.alxuiLastVis){
       this.styleEl(node, {display: node.alxuiLastVis});
     } else {
       this.styleEl(node, {display: 'block'});
+      node.alxuiLastVis = node.style.display;
     }
   };
 
@@ -70,6 +74,11 @@ window.ALXUI = window.ALXUI || {};
   };
 
   ui.setBackgroundImage = function(el, url, noContain){
+    if(url === el.alxuiBackgroundUrl ||
+        (url === App.BLANK_IMAGE_TAG && el.alxuiBackgroundUrl === App.BLANK_IMAGE_URL)){
+      return;
+    }
+    el.alxuiBackgroundUrl = url;
     if(url === App.BLANK_IMAGE_TAG){
       this.setBackgroundImage(el, App.BLANK_IMAGE_URL, noContain);
     } else if(App.getImageData(url).dataURI){
@@ -99,11 +108,50 @@ window.ALXUI = window.ALXUI || {};
     }
   };
 
+  ui.addDivTo = function(parentNode, style, textContent, ontouchclick, context){
+    var div = ALXUI.addEl(parentNode, 'div', style);
+    if(textContent || textContent === ''){
+      div.textContent = textContent;
+    }
+    if(ontouchclick){
+      App.css.addTouchClickEvent(div, ontouchclick.bind(context));
+    }
+    return div;
+  };
+
+  ui.setGreyInstructionStyle = function(input){
+    var once = function (e){
+      input.value = '';
+      this.styleEl(input, {color: 'black'});
+      setTimeout(function(){
+        input.focus();
+      }.bind(this));
+      input.removeEventListener('focus', once);
+    }.bind(this);
+    input.addEventListener('focus', once);
+    ALXUI.styleEl(input, {color: '#aaa'});
+  };
+
+  //works around a bug in ios7 by detaching and reattaching the
+  //given el on orientation change
+  ui.addTouchScrolling = function (el){
+    if(App.css.osIsIOS()){
+      this.styleEl(el, {webkitOverflowScrolling: 'touch', overflow: 'auto'});
+      window.addEventListener('orientationchange', function(){
+        this.styleEl(el, {webkitOverflowScrolling: 'auto', overflow: 'hidden'});
+        setTimeout(function(){
+          this.styleEl(el, {webkitOverflowScrolling: 'touch', overflow: 'auto'});
+        }.bind(this))
+      }.bind(this));
+    }
+  };
+
   var containStyle = {
     backgroundSize: 'contain',
     mozBackgroundSize: 'contain',
     backgroundPosition: 'center center',
     backgroundRepeat: 'no-repeat',
   };
+
 
 }(ALXUI));

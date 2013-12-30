@@ -4,17 +4,24 @@
 window.App = window.App || {};
 (function(App){
 
-  var LabeledInput = function(parentNode, label, tooltip) {
-    this.initialize(parentNode, label, tooltip);
+  var LabeledInput = function(parentNode, label, tooltip, onInput, onInputClick) {
+    this.initialize(parentNode, label, tooltip, onInput, onInputClick);
   };
 
-  var p = LabeledInput.prototype;
-  p.initialize = function(parentNode, label, tooltip) {
-    this.div = ALXUI.addEl(parentNode, 'div', divStyle);
-    this.label = ALXUI.addEl(this.div, 'div', labelStyle);
-    this.label.textContent = label + ':';
+  var p = LabeledInput.prototype = new App.VPBase();
+  p.baseInitialize = p.initialize;
+
+  p.initialize = function(parentNode, label, tooltip, onInput, onInputClick) {
+    this.baseInitialize(parentNode, null, divStyle);
+    this.label = this.addDiv(labelStyle, label + ':');
     this.input = ALXUI.addEl(this.div, 'input', inputStyle);
     this.input.title = tooltip;
+    if(onInputClick){
+      App.css.addTouchClickEvent(this.input, onInputClick);
+    }
+    if(onInput){
+      this.input.addEventListener('input', onInput);
+    }
   };
 
   var divStyle = {
