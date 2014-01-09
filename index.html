@@ -24,6 +24,7 @@
     <script type="text/javascript" src="mixpanel.js"></script>
     <script type="text/javascript" src="Css.js"></script>
     <script type="text/javascript" src="BrowserTest.js"></script>
+    <script type="text/javascript" src="base64-binary.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.0/backbone-min.js"></script>
     <script type="text/javascript" src="//sdk.amazonaws.com/js/aws-sdk-2.0.0-rc4.min.js"></script>
@@ -63,6 +64,10 @@
     <script type="text/javascript" src="WebsqlBucket.js"></script>
     <script type="text/javascript" src="LoadingScreen.js"></script>
     <script type="text/javascript" src="ScalingContainer.js"></script>
+    <script type="text/javascript" src="AudioManager.js"></script>
+    <script type="text/javascript" src="AnimationManager.js"></script>
+    <script type="text/javascript" src="LabeledCheckbox.js"></script>
+    <script type="text/javascript" src="ActivityCompletePopup.js"></script>
   </head>
   <body>
     <div id="fb-root"></div>
@@ -82,7 +87,7 @@
       //HACK LOGOUT FOR DEBUGGING TODO SOMETHING REAL
       var logout = ALXUI.addEl(App.Container, 'div', { left: App.css.generateBrowserCalcString('50% - 20px'), top: 10, position: 'absolute', color: '#ddd',
           textDecoration: 'underline', zIndex: 10, cursor: 'pointer'});
-      logout.textContent = 'logout (version 29)';
+      logout.textContent = 'logout (version 34)';
       if(window.location.href.indexOf('staging') === -1){
         ALXUI.hide(logout);
       }

@@ -5,7 +5,9 @@ window.App = window.App || {};
 (function(App){
 
   var LabeledInput = function(parentNode, label, tooltip, onInput, onInputClick) {
-    this.initialize(parentNode, label, tooltip, onInput, onInputClick);
+    if(parentNode){
+      this.initialize(parentNode, label, tooltip, onInput, onInputClick);
+    }
   };
 
   var p = LabeledInput.prototype = new App.VPBase();
@@ -41,14 +43,14 @@ window.App = window.App || {};
     lineHeight: '24px',
     cssFloat: 'left',
     fontFamily: 'Arial',
-    width: 50,
+    width: 60,
   };
 
   var inputStyle = {
     height: 18,
     cssFloat: 'left',
     marginLeft: 10,
-    width: App.css.generateBrowserCalcString('100% - 80px'),
+    width: App.css.generateBrowserCalcString('100% - 90px'),
   };
 
   App.LabeledInput = LabeledInput;

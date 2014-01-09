@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 14.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 43363)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1022px"
+	 height="200px" viewBox="0 0 1022 200" enable-background="new 0 0 1022 200" xml:space="preserve">
+<g id="Layer_1">
+	<rect fill="#0E7CB7" width="1022" height="200"/>
+</g>
+<g id="shine_lines">
+	<polygon opacity="0.5" fill="#FFFFFF" points="171.8,0 0,171.8 0,200 89,200 289,0 	"/>
+	<polygon opacity="0.5" fill="#FFFFFF" points="213.3,200 387.7,200 587.7,0 413.3,0 	"/>
+	<polygon opacity="0.5" fill="#FFFFFF" points="510.5,200 710.5,0 651.1,0 451.1,200 	"/>
+	<polygon opacity="0.5" fill="#FFFFFF" points="928.3,200 1022,106.3 1022,0 909.3,0 709.3,200 	"/>
+</g>
+</svg>

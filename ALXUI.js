@@ -119,12 +119,15 @@ window.ALXUI = window.ALXUI || {};
     return div;
   };
 
-  ui.setGreyInstructionStyle = function(input){
+  ui.setGreyInstructionStyle = function(input, onclear){
     var once = function (e){
       input.value = '';
       this.styleEl(input, {color: 'black'});
       setTimeout(function(){
         input.focus();
+        if(onclear){
+          onclear({target: input});
+        }
       }.bind(this));
       input.removeEventListener('focus', once);
     }.bind(this);

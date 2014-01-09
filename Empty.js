@@ -27,7 +27,7 @@ window.App = window.App || {};
   p.show = function(detailView){
     if(detailView){
       this.emptyText.innerHTML =  '~ No steps found ~<br/>Click the "Show all steps" button to view your steps.';
-      ALXUI.styleEl(this.emptyArrow, {right: 80});
+      ALXUI.styleEl(this.emptyArrow, {right: 255});
     } else {
       this.emptyText.innerHTML = '~ No activities found ~<br/>Click the "Create New" button create a new activity.';
       ALXUI.styleEl(this.emptyArrow, {right: 80});

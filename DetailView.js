@@ -16,14 +16,19 @@ window.App = window.App || {};
     this.addBackButton(_onBackClick.bind(this));
     this.addBackText();
     this.showAll = this.addRightHeaderButton('Show all steps', _onShowAll.bind(this));
+    this.reverse = this.addRightHeaderButton('Reverse steps', _onReverse.bind(this));
+    ALXUI.styleEl(this.reverse, reverseStyle);
+    ALXUI.styleEl(this.showAll, showAllStyle);
     this.showAll.title = 'Show any steps that have been hidden';
     ALXUI.hide(this.headerTitle);
-    this.dispatcher.bind('hideStep', function(){
+    this.dispatcher.bind('stepHidden', function(){
       ALXUI.show(this.showAll);
       _updateBoxes.apply(this);
       _stripeBoxes.apply(this);
     }, this);
     ALXUI.hide(this.showAll);
+    this.empty.hide();
+    this.empty = new App.ActivityCompletePopup(document.body, this.dispatcher);
   };
 
   p.onModelChange = function(model, data){
@@ -32,6 +37,9 @@ window.App = window.App || {};
 
   p.activityListUpdate = p.update;
   p.update = function(data, stripe){
+    if(this.div.style.display == "none"){
+      return;
+    }
     var parentIndex;
     _.each(data, function(d){
       if(d.parentId === null){
@@ -47,9 +55,15 @@ window.App = window.App || {};
 
   p.baseShow = p.show;
   p.show = function(data, modelData){
+    this.clear();
     this.baseShow();
     this.setTargetActivity(data);
     this.onModelChange(null, modelData);
+    this.dispatcher.trigger('setStepAnimate', !data.noStepCelebration);
+    if(this.isEmpty){
+      _onShowAll.apply(this);
+    }
+    this.empty.preloadYoutube(this.targetActivityData.reward);
   };
 
   function _onShowAll(){
@@ -58,6 +72,14 @@ window.App = window.App || {};
     ALXUI.hide(this.showAll);
     _updateBoxes.apply(this);
     _stripeBoxes.apply(this);
+  }
+
+  function _onReverse(){
+    var i = this.listContainer.childNodes.length - 1;
+    while(i > 0){
+      this.listContainer.appendChild(this.listContainer.childNodes[i]);
+      i--;
+    }
   }
 
   function _stripeBoxes(){
@@ -69,8 +91,12 @@ window.App = window.App || {};
       }
     });
     if(count === 0){
-      this.empty.show(true);
+      this.isEmpty = true;
+      if(this.targetActivityData){
+        this.empty.show(this.targetActivityData.reward);
+      }
     } else {
+      this.isEmpty = false;
       this.empty.hide();
     }
   }
@@ -95,6 +121,14 @@ window.App = window.App || {};
   function _onBackClick(){
     this.dispatcher.trigger('backToHome');
   }
+
+  var reverseStyle = {
+    display: 'block',
+  };
+
+  var showAllStyle = {
+    right: 200,
+  };
 
   App.DetailView = DetailView;
 }(App));

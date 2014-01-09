@@ -52,6 +52,10 @@ window.App = window.App || {};
         'entering text in the "When" text field.', "left,bottom");
     this.addIntroStep('Edit', vp.activityEditor.dataRows[0].thumb, 'You can edit your activities icon by clicking on ' +
         'it.', "right,bottom");
+    this.addIntroStep('Edit', vp.activityEditor.dataRows[0].rewardInput.div, 'You can specify a youtube url that will be ' +
+        'shown as a reward when this activity is completed here.', 'right,top');
+    this.addIntroStep('Edit', vp.activityEditor.dataRows[0].celebrateInput.div, 'This checkbox lets you enable or disable ' +
+        'the step completion animations for this activity.', 'right,top');
     this.addIntroStep('Edit', vp.activityEditor.dataRows[1].div, 'Activities are made up of steps.  An ' +
         'activity like "Go to the grocery store" might have steps like "Drive to the store", "Shop", ' +
         '"Pay Cashier", and "Drive Home".', "center,top");
@@ -86,19 +90,16 @@ window.App = window.App || {};
   };
 
   p.buildDetail = function(vp){
-    var wasEmpty = vp.detailView.empty.div.style.display !== 'none';
     this.addIntroStep('Detail', null,
         'This screen shows a step by step view of a given Activity.');
-    this.addIntroStep('Detail', vp.detailView.back, "To return to your list of activities click here", "right,bottom",
-        null, true, false, true);
-    if(!wasEmpty){
-      this.addIntroStep('Detail', vp.detailView.dataRows[0].hider, 'You can hide a step by clicking here. If any ' +
+    this.addIntroStep('Detail', vp.detailView.dataRows[0].hider, 'You can mark a step as completed and hide it ' +
+        'by clicking here. If any ' +
           'steps are hidden a button will appear in the top right that lets you show all hidden steps.',
           "left,bottom", null, true, false, true);
-    } else {
-      this.addIntroStep('Detail', vp.detailView.showAll, 'All your steps are hidden.  Please click the "Show all ' +
-          'steps" button to reveal them.', "left,bottom", null, true, false, true);
-    }
+    this.addIntroStep('Detail', vp.detailView.reverse, 'You can reverse the order of the steps by clicking here.',
+        "left,bottom", null, true, false, true);
+    this.addIntroStep('Detail', vp.detailView.back, "To return to your list of activities click here.", "right,bottom",
+        null, true, false, true);
   };
 
   p.buildNewUser = function(vp){

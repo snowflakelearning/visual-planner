@@ -40,11 +40,11 @@ window.App = window.App || {};
     obj.removeEventListener('transitionEnd', func);
   };
 
-  App.css.generateRotationStyle = function(degX, degY){
+  App.css.generateRotationStyle = function(degX, degY, degZ){
     return {
-      webkitTransform: 'rotateX(' + degX + 'deg) rotateY(' + degY + 'deg)',
-      mozTransform: 'rotateX(' + degX + 'deg) rotateY(' + degY + 'deg)',
-      transform: 'rotateX(' + degX + 'deg) rotateY(' + degY + 'deg)',
+      webkitTransform: 'rotateX(' + degX + 'deg) rotateY(' + degY + 'deg) rotateZ(' + degZ + 'deg)',
+      mozTransform: 'rotateX(' + degX + 'deg) rotateY(' + degY + 'deg) rotateZ(' + degZ + 'deg)',
+      transform: 'rotateX(' + degX + 'deg) rotateY(' + degY + 'deg) rotateZ(' + degZ + 'deg)',
       webkitTransformPerspective: 'preserve-3d',
       mozTransformPerspective: 'preserve-3d',
       transformPerspective: 'preserve-3d',

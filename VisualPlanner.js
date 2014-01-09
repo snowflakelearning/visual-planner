@@ -37,6 +37,8 @@ var App = App || {};
     this.activityEditor = new App.ActivityEditor(this.content, this.dispatcher);
     this.imageSelectPopup = new App.ImageGallery(document.body, this.dispatcher);
     this.imageSelectPopup.toPopupMode();
+    this.audioManager = new App.AudioManager(document.body, this.dispatcher);
+    this.animationManager = new App.AnimationManager(document.body, this.dispatcher);
     this.firstRun = true;
     this.homeList.hide();
     this.detailView.hide();
@@ -235,7 +237,7 @@ var App = App || {};
     var row = _.find(activityData, function(r){
       return r.id === rowData.id && r.parentId === rowData.parentId;
     });
-    for(var x in row){
+    for(var x in rowData){
       row[x] = rowData[x];
     }
     this.saveData(activityData);

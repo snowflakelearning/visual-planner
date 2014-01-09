@@ -46,6 +46,14 @@ window.App = window.App || {};
     }
   };
 
+  p.clear = function(){
+    this.data = [];
+    for(var i = 0; i < this.dataRows.length; i++){
+      this.listContainer.removeChild(this.dataRows[i].div);
+    }
+    this.dataRows = [];
+  }
+
   function _addRows(data, idField){
     _.each(data, function(d){
         if(!_.find(this.dataRows, function(t){

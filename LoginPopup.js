@@ -154,7 +154,7 @@ window.App = window.App || {};
     } else {
       flake.rotation -= 180;
     }
-    var flipStyle = App.css.generateRotationStyle(0, flake.rotation);
+    var flipStyle = App.css.generateRotationStyle(0, flake.rotation, 0);
     ALXUI.styleEl(flake, flipStyle);
   }
 
